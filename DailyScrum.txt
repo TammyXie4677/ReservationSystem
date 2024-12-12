@@ -44,9 +44,12 @@ Example entries for one day, both team members:
 
 2024/12/12 Qiutian Wang
 1. Done / not done since last scrum:
--
+- project proposal
+- set up azure database
+- split tasks
 2. To do until next Scrum:
-- 
+- set up project - database connection
+- start working on registration and login
 3. Need assistance / figure things out
 - 
 
