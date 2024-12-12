@@ -29,8 +29,8 @@ Example entries for one day, both team members:
 
 2024/12/11 Kejia Li
 1. Done / not done since last scrum:
-- 
+- give advice to proposal
 2. To do until next Scrum:
-- 
+- help with backbone setup and frontend of system
 3. Need assistance / figure things out
 - 
