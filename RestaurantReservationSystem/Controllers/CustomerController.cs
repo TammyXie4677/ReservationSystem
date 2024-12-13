@@ -22,15 +22,29 @@ namespace RestaurantReservationSystem.Controllers
             // Create a base query to fetch restaurants
             var query = _context.Restaurants.AsQueryable();
 
-            // If there is a search term, filter the restaurants
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(r => r.Name.Contains(search) ||
-                                          r.CuisineType.Contains(search) ||
-                                          r.PriceRange.Contains(search));
-                
-                // Store the search term for view to prefill the input box
+                // Split the search term into words and remove empty values or extra spaces
+                var searchTerms = search.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(s => s.ToLower())  // Convert each term to lowercase
+                                         .ToList();
+
+                if (searchTerms.Any())  // Only filter if there are valid search terms
+                {
+                    query = query.Where(r => searchTerms.All(term =>
+                        r.Name.ToLower().Contains(term) ||
+                        r.CuisineType.ToLower().Contains(term) ||
+                        r.PriceRange.ToLower().Contains(term)
+                    ));
+                }
+
+                // Store the search term for the view to prefill the input box
                 ViewData["SearchTerm"] = search;
+            }
+            else
+            {
+                // If the search term is empty, set empty search for the input box
+                ViewData["SearchTerm"] = "";
             }
 
             // Map the results to RestaurantViewModel
