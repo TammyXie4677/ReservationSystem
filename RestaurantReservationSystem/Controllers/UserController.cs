@@ -19,6 +19,90 @@ namespace RestaurantReservationSystem.Controllers
             _context = context;
         }
 
+        // GET: Manage Profile
+        [Authorize(Roles = "Customer")]
+        public IActionResult Profile()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var model = new UpdateProfileViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return View(model);
+        }
+
+        // POST: Handle Profile Update
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Customer")]
+        public IActionResult Profile(UpdateProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the new email is already registered (excluding the current user's email)
+            if (_context.Users.Any(u => u.Email == model.Email && u.Email != user.Email))
+            {
+                ModelState.AddModelError("Email", "Email is already registered.");
+                return View(model);
+            }
+
+            // Update user information (Only update fields that are provided)
+            user.FirstName = model.FirstName ?? user.FirstName;
+            user.LastName = model.LastName ?? user.LastName;
+            user.Email = model.Email ?? user.Email;
+            user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
+
+            // Only update the password if it's provided and confirmed
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                // Validate password confirmation if a password is provided
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
+                    return View(model);
+                }
+
+                // Update the password hash if it's provided and confirmed
+                user.PasswordHash = HashPassword(model.Password);
+            }
+
+            // Ensure the entity is being tracked before saving
+            _context.Users.Attach(user);
+
+            _context.SaveChanges();
+
+            // Set a success message using TempData
+            TempData["SuccessMessage"] = "Profile updated successfully!";
+
+            return RedirectToAction("Profile"); // Redirect to the same page after the update
+        }
+
+
+
+
+
         // GET: Registration form
         public IActionResult Register()
         {
