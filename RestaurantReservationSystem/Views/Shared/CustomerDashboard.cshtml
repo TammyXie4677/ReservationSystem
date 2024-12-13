@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Customer Dashboard";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Your Dashboard</h1>
+
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
+    {
+        <p>Hello, @User.Identity.Name! You are logged in as a <strong>Customer</strong>.</p>
+        <div class="mt-4">
+            <p>Here are some features available to you:</p>
+            <ul class="list-unstyled">
+                <li><a href="/Reservations/MyReservations" class="btn btn-link">View My Reservations</a></li>
+                <li><a href="/Menu" class="btn btn-link">Explore the Menu</a></li>
+                <li><a href="/Customer/Profile" class="btn btn-link">Manage My Profile</a></li>
+            </ul>
+        </div>
+        <form asp-controller="User" asp-action="Logout" method="post" class="mt-4">
+            <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+
+    }
+    else
+    {
+        <p>Access Denied: You do not have permission to view this page.</p>
+    }
+</div>

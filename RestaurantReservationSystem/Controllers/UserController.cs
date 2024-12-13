@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantReservationSystem.Models;
 using RestaurantReservationSystem.ViewModels;
@@ -52,7 +53,7 @@ namespace RestaurantReservationSystem.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
-                UserRole = "Customer",
+                UserRole = "Customer", // Default role for registered users
                 CreatedAt = DateTime.Now
             };
 
@@ -96,7 +97,7 @@ namespace RestaurantReservationSystem.Controllers
             {
                 new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.UserRole)
+                new Claim(ClaimTypes.Role, user.UserRole) // Assign the user's role
             };
 
             // Create the authentication cookie
@@ -109,7 +110,16 @@ namespace RestaurantReservationSystem.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            // Redirect to home or dashboard
+            // Redirect based on user role
+            if (user.UserRole == "Admin")
+            {
+                return RedirectToAction("AdminDashboard", "Admin");
+            }
+            else if (user.UserRole == "Customer")
+            {
+                return RedirectToAction("CustomerDashboard", "Customer");
+            }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -118,6 +128,13 @@ namespace RestaurantReservationSystem.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "User");
+        }
+
+        // GET: Access Denied
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View(); // Create an AccessDenied view to display an error message
         }
 
         // Password hashing helper

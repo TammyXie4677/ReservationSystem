@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to the Admin Dashboard</h1>
+
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <p>Hello, @User.Identity.Name! You are logged in as an <strong>Admin</strong>.</p>
+        <div class="mt-4">
+            <p>Here are your administrative tools:</p>
+            <ul class="list-unstyled">
+                <li><a href="/Reservations/All" class="btn btn-link">View All Reservations</a></li>
+                <li><a href="/Users/Manage" class="btn btn-link">Manage Users</a></li>
+                <li><a href="/Menu/Edit" class="btn btn-link">Edit Menu Items</a></li>
+                <li><a href="/Reports" class="btn btn-link">View Reports</a></li>
+            </ul>
+        </div>
+        <form asp-controller="User" asp-action="Logout" method="post" class="mt-4">
+            <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+
+    }
+    else
+    {
+        <p>Access Denied: You do not have permission to view this page.</p>
+    }
+</div>
