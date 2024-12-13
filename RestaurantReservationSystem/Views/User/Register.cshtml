@@ -1,6 +1,7 @@
 @model RestaurantReservationSystem.ViewModels.RegisterViewModel
 
 <h2>Register</h2>
+
 <form asp-action="Register" method="post">
     <div>
         <label asp-for="Email"></label>
@@ -40,6 +41,9 @@
 
     <button type="submit">Register</button>
 </form>
+
+<!-- Login option -->
+<p>Already have an account? <a asp-action="Login" asp-controller="User">Login here</a>.</p>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
