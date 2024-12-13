@@ -17,10 +17,24 @@ namespace RestaurantReservationSystem.Controllers
             _context = context;
         }
 
-        public IActionResult CustomerDashboard()
+        public IActionResult CustomerDashboard(string search)
         {
-            // Fetch the list of available restaurants from the database
-            var restaurants = _context.Restaurants
+            // Create a base query to fetch restaurants
+            var query = _context.Restaurants.AsQueryable();
+
+            // If there is a search term, filter the restaurants
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(r => r.Name.Contains(search) ||
+                                          r.CuisineType.Contains(search) ||
+                                          r.PriceRange.Contains(search));
+                
+                // Store the search term for view to prefill the input box
+                ViewData["SearchTerm"] = search;
+            }
+
+            // Map the results to RestaurantViewModel
+            var restaurants = query
                 .Select(r => new RestaurantViewModel
                 {
                     RestaurantId = r.RestaurantId,
@@ -30,7 +44,7 @@ namespace RestaurantReservationSystem.Controllers
                 })
                 .ToList();
 
-            // Pass the list of restaurants to the view
+            // Pass the filtered list of restaurants to the view
             return View(restaurants);
         }
     }

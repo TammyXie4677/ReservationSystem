@@ -4,7 +4,7 @@ namespace RestaurantReservationSystem.ViewModels
     {
         public int RestaurantId { get; set; }
         public required string Name { get; set; }
-        public string? CuisineType { get; set; }
+        public required string CuisineType { get; set; }
         public required string PriceRange { get; set; }
     }
 }

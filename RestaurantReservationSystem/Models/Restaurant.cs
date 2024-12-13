@@ -15,7 +15,7 @@ public partial class Restaurant
 
     public string Email { get; set; } = null!;
 
-    public string? CuisineType { get; set; }
+    public required string CuisineType { get; set; }
 
     public string PriceRange { get; set; } = null!;
 
