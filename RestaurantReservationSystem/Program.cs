@@ -1,5 +1,6 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using RestaurantReservationSystem.Models;  // Make sure to adjust the namespace to match your project
+using RestaurantReservationSystem.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<RestaurantReservationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add services for authentication and authorization if needed (example below)
+// Add cookie authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/User/Login"; // Redirect here if not authenticated
+        options.LogoutPath = "/User/Logout";
+        options.AccessDeniedPath = "/User/AccessDenied";
+    });
+
+// Add authorization
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication();
 
 // Build the app
 var app = builder.Build();
@@ -43,6 +52,5 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "user",
     pattern: "{controller=User}/{action=Register}/{id?}");
-
 
 app.Run();

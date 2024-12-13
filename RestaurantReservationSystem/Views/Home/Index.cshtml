@@ -4,5 +4,18 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>Hello, @ViewData["UserName"]!</p>
+        <form asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+    }
+    else
+    {
+        <p>Welcome, Guest! Please <a href="/User/Login">Login</a> or <a href="/User/Register">Register</a>.</p>
+    }
+
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
