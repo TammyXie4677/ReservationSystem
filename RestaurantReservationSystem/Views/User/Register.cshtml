@@ -1,49 +1,67 @@
 @model RestaurantReservationSystem.ViewModels.RegisterViewModel
 
-<h2>Register</h2>
+<h2 class="text-center my-4">Register</h2>
 
-<form asp-action="Register" method="post">
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Register" method="post" class="p-4 border rounded shadow-sm bg-light">
+                <!-- Email -->
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <!-- First Name -->
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <!-- Last Name -->
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+
+            <!-- Login option -->
+            <p class="text-center mt-3">
+                Already have an account? <a asp-action="Login" asp-controller="User" class="text-decoration-none">Login
+                    here</a>.
+            </p>
+        </div>
     </div>
-
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-
-    <div>
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" type="password" />
-        <span asp-validation-for="ConfirmPassword"></span>
-    </div>
-
-    <div>
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" />
-        <span asp-validation-for="FirstName"></span>
-    </div>
-
-    <div>
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" />
-        <span asp-validation-for="LastName"></span>
-    </div>
-
-    <div>
-        <label asp-for="PhoneNumber"></label>
-        <input asp-for="PhoneNumber" />
-        <span asp-validation-for="PhoneNumber"></span>
-    </div>
-
-    <button type="submit">Register</button>
-</form>
-
-<!-- Login option -->
-<p>Already have an account? <a asp-action="Login" asp-controller="User">Login here</a>.</p>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
