@@ -60,3 +60,27 @@ Example entries for one day, both team members:
 - start working on admin uploading function
 3. Need assistance / figure things out
 - 
+
+2024/12/13 Yunting Xie
+1. Done / not done since last scrum:
+- set up the database on azure cloud
+2. To do until next Scrum:
+- working on customer reservation
+3. Need assistance / figure things out
+- 
+
+2024/12/13 Qiutian Wang
+1. Done / not done since last scrum:
+- 
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
+
+2024/12/13 Kejia Li
+1. Done / not done since last scrum:
+-  
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
