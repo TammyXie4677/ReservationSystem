@@ -1,3 +1,5 @@
+@model List<RestaurantReservationSystem.ViewModels.RestaurantViewModel>
+
 @{
     ViewData["Title"] = "Customer Dashboard";
 }
@@ -16,10 +18,45 @@
                 <li><a href="/Customer/Profile" class="btn btn-link">Manage My Profile</a></li>
             </ul>
         </div>
+
         <form asp-controller="User" asp-action="Logout" method="post" class="mt-4">
             <button type="submit" class="btn btn-primary">Logout</button>
         </form>
-
+        
+        <div class="restaurant-list mt-4">
+            <h2>Available Restaurants</h2>
+            
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Restaurant Name</th>
+                            <th>Cuisine</th>
+                            <th>Price Range</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var restaurant in Model)
+                        {
+                            <tr>
+                                <td>@restaurant.Name</td>
+                                <td>@restaurant.CuisineType</td>
+                                <td>@restaurant.PriceRange</td>
+                                <td>
+                                    <a asp-action="View" asp-route-id="@restaurant.RestaurantId" class="btn btn-info">View</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No restaurants available at the moment. Please check back later.</p>
+            }
+        </div>
     }
     else
     {
