@@ -71,9 +71,13 @@ Example entries for one day, both team members:
 
 2024/12/13 Qiutian Wang
 1. Done / not done since last scrum:
-- 
+- database connection
+- registration, login, logout
 2. To do until next Scrum:
-- 
+- improve ui
+- auth based on roles
+- profile update
+- account deletion
 3. Need assistance / figure things out
 - 
 

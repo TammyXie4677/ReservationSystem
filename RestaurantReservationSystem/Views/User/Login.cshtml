@@ -1,36 +1,50 @@
 @model RestaurantReservationSystem.ViewModels.LoginViewModel
 
-<h2>Login</h2>
+<h2 class="text-center my-4">Login</h2>
 
-<form asp-action="Login" method="post">
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
-    </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Login" method="post" class="p-4 border rounded shadow-sm bg-light">
+                <!-- Email -->
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
 
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password"></span>
-    </div>
+                <!-- Password -->
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
 
-    <!-- Display error message from ModelState -->
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <p>@error.ErrorMessage</p>
-            }
+                <!-- Display error message -->
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <p class="mb-0">@error.ErrorMessage</p>
+                        }
+                    </div>
+                }
+
+                <!-- Login Button -->
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+
+            <!-- Registration option -->
+            <p class="text-center mt-3">
+                Don't have an account? <a asp-action="Register" asp-controller="User"
+                    class="text-decoration-none">Register here</a>.
+            </p>
         </div>
-    }
-
-    <button type="submit">Login</button>
-</form>
-
-<!-- Registration option -->
-<p>Don't have an account? <a asp-action="Register" asp-controller="User">Register here</a>.</p>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
