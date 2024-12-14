@@ -9,7 +9,7 @@
 
     @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
     {
-        <p>Hello, @User.Identity.Name! You are logged in as a <strong>Customer</strong>.</p>
+        <p class="greeting">Hello, @User.Identity.Name! You are logged in as a <strong>Customer</strong>.</p>
         <div class="mt-4">
             <p>Here are some features available to you:</p>
             <ul class="list-unstyled">
@@ -20,51 +20,44 @@
         </div>
 
         <form asp-controller="User" asp-action="Logout" method="post" class="mt-4">
-            <button type="submit" class="btn btn-primary">Logout</button>
+            <button type="submit" class="btn btn-primary btn-lg">Logout</button>
         </form>
 
         <div class="restaurant-list mt-4">
-            <h2>Available Restaurants</h2>
+            <h2 class="section-title">Available Restaurants</h2>
             <form asp-action="CustomerDashboard" method="get" class="mt-4">
-                <div class="form-group d-flex">
-                    <input type="text" name="search" class="form-control me-2"
+                <div class="form-group d-flex justify-content-center">
+                    <input type="text" name="search" class="form-control search-input"
                         placeholder="Search Restaurant Name, Cuisine Type or Price Range"
                         value="@ViewData["SearchTerm"]" />
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-primary btn-lg ms-2">Search</button>
                 </div>
             </form>
 
-
-            @if (Model != null && Model.Any())
-            {
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Restaurant Name</th>
-                            <th>Cuisine</th>
-                            <th>Price Range</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var restaurant in Model)
-                        {
-                            <tr>
-                                <td>@restaurant.Name</td>
-                                <td>@restaurant.CuisineType</td>
-                                <td>@restaurant.PriceRange</td>
-                                <td>
-                                    <a asp-action="View" asp-route-id="@restaurant.RestaurantId" class="btn btn-info">View</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>No restaurants available at the moment. Please check back later.</p>
-            }
+            <div class="row mt-4">
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var restaurant in Model)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card restaurant-card shadow-lg rounded">
+                                <img src="https://via.placeholder.com/150" class="card-img-top rounded" alt="@restaurant.Name">
+                                <div class="card-body">
+                                    <h5 class="card-title text-uppercase">@restaurant.Name</h5>
+                                    <p class="card-text">
+                                        Cuisine Type: @restaurant.CuisineType (@restaurant.PriceRange)
+                                    </p>
+                                    <a asp-action="Reserve" asp-route-id="@restaurant.RestaurantId" class="btn btn-lg btn-info">Reserve a table</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No restaurants available at the moment. Please check back later.</p>
+                }
+            </div>
         </div>
     }
     else
@@ -72,3 +65,85 @@
         <p>Access Denied: You do not have permission to view this page.</p>
     }
 </div>
+
+<style>
+    .greeting {
+        font-size: 1rem; 
+        color: #555;
+        margin-top: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem; 
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .search-input {
+        max-width: 500px;
+        padding: 0.6rem; 
+        border-radius: 25px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: 0.9rem;
+    }
+
+    .restaurant-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 10px;
+    }
+
+    .restaurant-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .restaurant-card .card-body {
+        padding: 1.5rem;
+        background-color: #f9f9f9;
+    }
+
+    .restaurant-card .card-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .restaurant-card .card-text {
+        font-size: 1rem; 
+        color: #555;
+    }
+
+    .btn-info {
+        background-color: #8be8f6;
+        border-color: #2fd3ec;
+        padding: 0.6rem 1.2rem; 
+        border-radius: 25px;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 0.9rem; 
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #138496;
+    }
+
+    .btn-primary {
+        padding: 0.6rem 1.2rem; 
+        font-size: 0.9rem; 
+        border-radius: 25px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .card-img-top {
+        border-radius: 10px;
+        object-fit: cover;
+        height: 200px;
+    }
+</style>
