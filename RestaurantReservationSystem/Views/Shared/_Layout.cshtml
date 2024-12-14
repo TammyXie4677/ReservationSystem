@@ -24,8 +24,8 @@
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-flex justify-content-center">
-                    <ul class="navbar-nav flex-grow-1 justify-content-center">
+                <div class="navbar-collapse collapse d-sm-flex justify-content-end">
+                    <ul class="navbar-nav">
                         <!-- Dynamic Home Link Based on Role -->
                         <li class="nav-item">
                             @if (User.IsInRole("Admin"))
@@ -47,7 +47,6 @@
                         <!-- Role-Specific Links -->
                         @if (User.IsInRole("Customer"))
                         {
-
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="/Reservations/MyReservations">My Reservations</a>
                             </li>
@@ -131,9 +130,7 @@
         font-weight: 600;
         color: #1b6ec2;
         text-transform: none;
-        /* Remove uppercase */
         letter-spacing: 0;
-        /* Adjust letter-spacing */
         transition: color 0.3s ease;
     }
 
@@ -166,12 +163,16 @@
     }
 
     .navbar-nav {
-        flex-grow: 1;
-        text-align: center;
+        margin-left: auto;
+    }
+
+    .navbar .container-fluid {
+        display: flex;
+        align-items: center;
     }
 
     .navbar-collapse {
-        justify-content: center;
+        justify-content: end;
     }
 
     .nav-pills .nav-link.active,
