@@ -9,16 +9,7 @@
     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
     {
         <p class="greeting">Hello, @User.Identity.Name! You are logged in as an <strong>Admin</strong>.</p>
-        <div class="mt-4">
-            <p>Here are your administrative tools:</p>
-            <ul class="list-unstyled">
-                   <li><a href="/AdminBooking/Index" class="btn btn-link">Manage Reservations</a></li>
-                <li><a href="/AdminBooking/Index" class="btn btn-link">Manage Restaurants</a></li>
-            </ul>
-        </div>
-        <form asp-controller="User" asp-action="Logout" method="post" class="mt-4">
-            <button type="submit" class="btn btn-primary">Logout</button>
-        </form>
+       
 
     }
     else
