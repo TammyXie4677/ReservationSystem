@@ -43,12 +43,6 @@ app.UseAuthorization();
 // Map static assets (images, styles, etc.)
 app.MapStaticAssets();
 
-// Define the default route pattern for controllers
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
 app.MapControllerRoute(
     name: "user",
     pattern: "{controller=User}/{action=Register}/{id?}");
