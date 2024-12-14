@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RestaurantReservationSystem.Models;
 using System;
 using System.Linq;
@@ -51,8 +52,8 @@ namespace RestaurantReservationSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(int RestaurantId, string FirstName, string LastName, string PhoneNumber, string Email, 
-                                    int Guests, string ReservationDate, string ReservationTime)
+        public IActionResult Create(int RestaurantId, string FirstName, string LastName, string PhoneNumber, string Email,
+                            int Guests, string ReservationDate, string ReservationTime)
         {
             if (!DateTime.TryParse(ReservationDate, out var datePart))
             {
@@ -95,13 +96,36 @@ namespace RestaurantReservationSystem.Controllers
             // Add the booking to the database
             _context.Bookings.Add(booking);
             _context.SaveChanges();
-            
-            return RedirectToAction("CustomerDashboard", "Customer");
+
+            // Redirect to the ReservationDetails page instead of CustomerDashboard
+            return RedirectToAction("ReservationDetails", "Booking");
         }
 
         public IActionResult Return()
         {
             return RedirectToAction("CustomerDashboard", "Customer");
         }
+
+        [Authorize(Roles = "Customer")]
+        public IActionResult ReservationDetails()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user == null)
+            {
+                return NotFound(); // Handle case where user does not exist
+            }
+
+            // Fetch all bookings for the logged-in user
+            var reservations = _context.Bookings
+                .Where(b => b.UserId == user.UserId)
+                .Include(b => b.Restaurant)  // Include restaurant details in the booking
+                .OrderBy(b => b.BookingDate)
+                .ToList();
+
+            return View(reservations); // Pass the reservations to the view
+        }
+
     }
 }
