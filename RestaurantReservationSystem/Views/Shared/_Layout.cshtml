@@ -27,13 +27,12 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin"
-                                    asp-action="AdminDashboard">Home
-                                    (Admin)</a>
+                                    asp-action="AdminDashboard">Home</a>
                             }
                             else if (User.IsInRole("Customer"))
                             {
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Customer"
-                                    asp-action="CustomerDashboard">Home (Customer)</a>
+                                    asp-action="CustomerDashboard">Home</a>
                             }
                             else
                             {
