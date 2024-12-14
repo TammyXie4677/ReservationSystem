@@ -3,6 +3,8 @@
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <!-- Restaurant Details Container -->
 <div class="container mt-5">
@@ -58,18 +60,46 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label for="Guests">Number of Guests</label>
-                    <input type="number" class="form-control" id="Guests" name="Guests" min="1" required />
+            <div class="row">
+                <div class="col-md-4 mx-auto">
+                    <div class="form-group">
+                        <label for="Guests">Number of Guests</label>
+                        <input type="number" class="form-control" id="Guests" name="Guests" min="1" max="20" required />
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label for="ReservationTime">Reservation Time</label>
-                    <input type="datetime-local" class="form-control" id="ReservationTime" name="ReservationTime"
-                        required />
+                <div class="col-md-4 mx-auto">
+                    <div class="form-group">
+                        <label for="ReservationDate">Reservation Date</label>
+                        <input type="text" class="form-control" id="ReservationDate" name="ReservationDate" required />
+                    </div>
+                </div>
+
+                <div class="col-md-4 mx-auto">
+                    <div class="form-group">
+                        <label for="ReservationTime">Reservation Time</label>
+                        <select class="form-control" id="ReservationTime" name="ReservationTime" required>
+                            @* Generate options starting from the next full hour if the current time is later than 10 AM, or from 10 AM otherwise *@
+                            @{
+                                // Determine the start time based on current time
+                                DateTime startTime;
+                                if (DateTime.Now.Hour < 10)
+                                {
+                                    startTime = DateTime.Today.AddHours(10); // Start at 10 AM if it's before 10 AM
+                                }
+                                else
+                                {
+                                    // Start from the next full hour after the current time
+                                    startTime = DateTime.Now.AddMinutes(60 - DateTime.Now.Minute).AddHours(1);
+                                }
+                                DateTime endTime = DateTime.Today.AddHours(21); // Up to 8 PM
+                                for (DateTime time = startTime; time <= endTime; time = time.AddHours(1))
+                                {
+                                    <option value="@time.ToString("HH:mm")">@time.ToString("HH:mm")</option>
+                                }
+                            }
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -84,6 +114,18 @@
         </div>
     </form>
 </div>
+
+<script>
+    flatpickr("#ReservationDate", {
+        minDate: "today",
+        disable: [
+            function (date) {
+                return date < new Date();
+            }
+        ],
+        dateFormat: "Y-m-d"
+    });
+</script>
 
 <!-- Custom CSS for Additional Styling -->
 <style>
