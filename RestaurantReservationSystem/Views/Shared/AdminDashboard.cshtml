@@ -1,20 +1,19 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to the Admin Dashboard</h1>
+    <h2 class="display-4">Welcome to Admin Dashboard</h1>
 
     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
     {
-        <p>Hello, @User.Identity.Name! You are logged in as an <strong>Admin</strong>.</p>
+        <p class="greeting">Hello, @User.Identity.Name! You are logged in as an <strong>Admin</strong>.</p>
         <div class="mt-4">
             <p>Here are your administrative tools:</p>
             <ul class="list-unstyled">
-                <li><a href="/Reservations/All" class="btn btn-link">View All Reservations</a></li>
-                <li><a href="/Users/Manage" class="btn btn-link">Manage Users</a></li>
-                <li><a href="/Menu/Edit" class="btn btn-link">Edit Menu Items</a></li>
-                <li><a href="/Reports" class="btn btn-link">View Reports</a></li>
+                   <li><a href="/AdminBooking/Index" class="btn btn-link">Manage Reservations</a></li>
+                <li><a href="/AdminBooking/Index" class="btn btn-link">Manage Restaurants</a></li>
             </ul>
         </div>
         <form asp-controller="User" asp-action="Logout" method="post" class="mt-4">
@@ -27,3 +26,28 @@
         <p>Access Denied: You do not have permission to view this page.</p>
     }
 </div>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .greeting {
+        font-size: 1rem; 
+        color: #555;
+        margin-top: 1rem;
+    }
+
+
+    .btn-link {
+        font-size: 1.1rem; 
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .btn-link:hover {
+        color: #0056b3;
+    }
+
+    
+</style>
