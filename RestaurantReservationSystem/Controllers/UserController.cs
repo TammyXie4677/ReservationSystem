@@ -250,5 +250,41 @@ namespace RestaurantReservationSystem.Controllers
             var hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
         }
+        // DELETE: Delete Account
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            // Get the logged-in user's email
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Remove associated bookings (if any)
+            var userBookings = _context.Bookings.Where(b => b.UserId == user.UserId).ToList();
+            if (userBookings.Any())
+            {
+                _context.Bookings.RemoveRange(userBookings);
+            }
+
+            // Remove the user from the database
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            // Log the user out after account deletion
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Display a success message
+            TempData["SuccessMessage"] = "Your account has been deleted successfully.";
+            return RedirectToAction("Index", "Home");
+        }
     }
+
+
+
 }
