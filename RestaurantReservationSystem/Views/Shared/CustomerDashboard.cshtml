@@ -7,30 +7,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to Your Dashboard</h1>
 
     @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
     {
-        <p class="greeting">Hello, @User.Identity.Name! You are logged in as a <strong>Customer</strong>.</p>
-        <div class="mt-4">
-            <p>Here are some features available to you:</p>
-            <ul class="list-unstyled">
-                <li><a href="/Reservations/MyReservations" class="btn btn-link">View My Reservations</a></li>
-                <li><a href="/User/Profile" class="btn btn-link">Manage My Profile</a></li> <!-- Updated link -->
-            </ul>
-        </div>
+        <p class="greeting">Hello, <strong>@User.Identity.Name</strong>! You are logged in as a <strong>Customer</strong>.
+        </p>
 
-        <form asp-controller="User" asp-action="Logout" method="post" class="mt-4">
-            <button type="submit" class="btn btn-primary btn-lg">Logout</button>
-        </form>
+
 
         <div class="restaurant-list mt-4">
             <h2 class="section-title">Available Restaurants</h2>
             <form asp-action="CustomerDashboard" method="get" class="mt-4">
                 <div class="form-group d-flex justify-content-center">
                     <input type="text" name="search" class="form-control search-input"
-                        placeholder="Search Restaurant Name, Cuisine Type or Price Range"
-                        value="@ViewData["SearchTerm"]" />
+                        placeholder="Search Restaurant Name, Cuisine Type or Price Range" value="@ViewData["SearchTerm"]" />
                     <button type="submit" class="btn btn-primary btn-lg ms-2">Search</button>
                 </div>
             </form>
@@ -48,7 +38,8 @@
                                     <p class="card-text">
                                         Cuisine Type: @restaurant.CuisineType (@restaurant.PriceRange)
                                     </p>
-                                    <a asp-controller="Booking" asp-action="Reserve" asp-route-id="@restaurant.RestaurantId" class="btn btn-lg btn-info">Reserve a table</a>
+                                    <a asp-controller="Booking" asp-action="Reserve" asp-route-id="@restaurant.RestaurantId"
+                                        class="btn btn-lg btn-info">Reserve a table</a>
                                 </div>
                             </div>
                         </div>
@@ -71,15 +62,15 @@
     body {
         font-family: 'Roboto', sans-serif;
     }
-    
+
     .greeting {
-        font-size: 1rem; 
+        font-size: 1rem;
         color: #555;
         margin-top: 1rem;
     }
 
     .section-title {
-        font-size: 1.5rem; 
+        font-size: 1.5rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
         color: #333;
@@ -87,7 +78,7 @@
 
     .search-input {
         max-width: 500px;
-        padding: 0.6rem; 
+        padding: 0.6rem;
         border-radius: 25px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         font-size: 0.9rem;
@@ -115,18 +106,18 @@
     }
 
     .restaurant-card .card-text {
-        font-size: 1rem; 
+        font-size: 1rem;
         color: #555;
     }
 
     .btn-info {
         background-color: #8be8f6;
         border-color: #2fd3ec;
-        padding: 0.6rem 1.2rem; 
+        padding: 0.6rem 1.2rem;
         border-radius: 25px;
         text-transform: uppercase;
         font-weight: bold;
-        font-size: 0.9rem; 
+        font-size: 0.9rem;
         transition: background-color 0.3s ease;
     }
 
@@ -136,8 +127,8 @@
     }
 
     .btn-primary {
-        padding: 0.6rem 1.2rem; 
-        font-size: 0.9rem; 
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
         border-radius: 25px;
         transition: background-color 0.3s ease;
     }
