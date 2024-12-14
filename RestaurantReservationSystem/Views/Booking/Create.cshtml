@@ -1,0 +1,152 @@
+@{
+    ViewData["Title"] = "Reserve a Table";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Restaurant Details Container -->
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card shadow-lg border-light rounded">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-3">Reserve a Table</h5>
+                    <p><strong>Restaurant:</strong> @ViewBag.RestaurantName</p>
+                    <p><strong>Address:</strong> @ViewBag.RestaurantAddress</p>
+                    <p><strong>Phone:</strong> @ViewBag.RestaurantPhone</p>
+                    <p><strong>Email:</strong> @ViewBag.RestaurantEmail</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reservation Form Container -->
+<div class="container mt-5">
+    <form asp-controller="Booking" asp-action="Create" method="post" class="mt-4">
+        <input type="hidden" name="RestaurantId" value="@ViewBag.RestaurantId" />
+
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label for="FirstName">First Name</label>
+                    <input type="text" class="form-control" id="FirstName" name="FirstName" required />
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label for="LastName">Last Name</label>
+                    <input type="text" class="form-control" id="LastName" name="LastName" required />
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label for="PhoneNumber">Phone Number</label>
+                    <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" required />
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input type="email" class="form-control" id="Email" name="Email" required />
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label for="Guests">Number of Guests</label>
+                    <input type="number" class="form-control" id="Guests" name="Guests" min="1" required />
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto">
+                <div class="form-group">
+                    <label for="ReservationTime">Reservation Time</label>
+                    <input type="datetime-local" class="form-control" id="ReservationTime" name="ReservationTime" required />
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto text-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg w-100">Reserve</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Custom CSS for Additional Styling -->
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .container {
+        max-width: 960px;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #000000;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        box-shadow: none;
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    }
+
+    .btn {
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 1.1rem;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .mt-5 {
+        margin-top: 3rem !important;
+    }
+
+    .mb-4 {
+        margin-bottom: 2rem !important;
+    }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-lg {
+        font-size: 1.2rem;
+    }
+</style>
+
