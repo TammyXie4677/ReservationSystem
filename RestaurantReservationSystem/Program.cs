@@ -53,4 +53,13 @@ app.MapControllerRoute(
     name: "user",
     pattern: "{controller=User}/{action=Register}/{id?}");
 
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "Admin/{action=AdminDashboard}/{id?}",
+    defaults: new { controller = "Admin", action = "AdminDashboard" });
+
+app.MapControllerRoute(
+    name: "adminBooking",
+    pattern: "AdminBooking/{action=Index}/{id?}");
+
 app.Run();
