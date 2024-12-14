@@ -46,8 +46,9 @@ namespace RestaurantReservationSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Customer")]
-        public IActionResult Profile(UpdateProfileViewModel model)
+        public async Task<IActionResult> Profile(UpdateProfileViewModel model)
         {
+            // Check initial model state
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -61,46 +62,66 @@ namespace RestaurantReservationSystem.Controllers
                 return NotFound();
             }
 
-            // Check if the new email is already registered (excluding the current user's email)
-            if (_context.Users.Any(u => u.Email == model.Email && u.Email != user.Email))
+            // Explicitly check for email uniqueness
+            if (model.Email != null && model.Email.ToLower() != user.Email.ToLower())
             {
-                ModelState.AddModelError("Email", "Email is already registered.");
-                return View(model);
+                // Check if the new email already exists in the database for ANY OTHER user
+                bool emailExists = _context.Users
+                    .Any(u => u.Email.ToLower() == model.Email.ToLower() && u.UserId != user.UserId);
+
+                if (emailExists)
+                {
+                    // Add model error to prevent form submission
+                    ModelState.AddModelError("Email", "This email is already registered by another user.");
+                    return View(model);
+                }
             }
 
-            // Update user information (Only update fields that are provided)
-            user.FirstName = model.FirstName ?? user.FirstName;
-            user.LastName = model.LastName ?? user.LastName;
-            user.Email = model.Email ?? user.Email;
-            user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
-
-            // Only update the password if it's provided and confirmed
+            // Validate password if provided
             if (!string.IsNullOrEmpty(model.Password))
             {
-                // Validate password confirmation if a password is provided
                 if (model.Password != model.ConfirmPassword)
                 {
                     ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
                     return View(model);
                 }
 
-                // Update the password hash if it's provided and confirmed
                 user.PasswordHash = HashPassword(model.Password);
             }
 
-            // Ensure the entity is being tracked before saving
-            _context.Users.Attach(user);
+            // Update user information only for fields that are provided
+            user.FirstName = model.FirstName ?? user.FirstName;
+            user.LastName = model.LastName ?? user.LastName;
+            user.Email = model.Email ?? user.Email;
+            user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
 
+            // Recreate authentication cookie with updated name
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.UserRole)
+    };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
+            };
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
+
+            _context.Users.Update(user);
             _context.SaveChanges();
 
-            // Set a success message using TempData
             TempData["SuccessMessage"] = "Profile updated successfully!";
 
-            return RedirectToAction("Profile"); // Redirect to the same page after the update
+            return RedirectToAction("Profile");
         }
-
-
-
 
 
         // GET: Registration form

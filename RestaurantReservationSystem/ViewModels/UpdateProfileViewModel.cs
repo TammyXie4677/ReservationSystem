@@ -1,21 +1,22 @@
 using System.ComponentModel.DataAnnotations;
+
 public class UpdateProfileViewModel
 {
-    [EmailAddress]
-    public string Email { get; set; }
+    [EmailAddress(ErrorMessage = "Invalid email address.")]
+    public string? Email { get; set; }
 
     [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
     [DataType(DataType.Password)]
-    public string? Password { get; set; }  // Make Password optional
+    public string? Password { get; set; }
 
     [Compare("Password", ErrorMessage = "Passwords do not match.")]
     [DataType(DataType.Password)]
-    public string? ConfirmPassword { get; set; }  // Make ConfirmPassword optional
+    public string? ConfirmPassword { get; set; }
 
-    public string? FirstName { get; set; }  // Make FirstName optional
+    public string? FirstName { get; set; }
 
-    public string? LastName { get; set; }  // Make LastName optional
+    public string? LastName { get; set; }
 
-    [Phone]
-    public string? PhoneNumber { get; set; }  // Make PhoneNumber optional
+    [Phone(ErrorMessage = "Invalid phone number.")]
+    public string? PhoneNumber { get; set; }
 }
