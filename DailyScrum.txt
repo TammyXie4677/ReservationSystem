@@ -83,8 +83,9 @@ Example entries for one day, both team members:
 
 2024/12/13 Kejia Li
 1. Done / not done since last scrum:
--  
+-  admin dashboard
 2. To do until next Scrum:
-- 
+- admin dashboard ui 
+- admin manage booking
 3. Need assistance / figure things out
 - 
