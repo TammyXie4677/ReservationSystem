@@ -34,7 +34,9 @@ namespace RestaurantReservationSystem.Controllers
                     query = query.Where(r => searchTerms.All(term =>
                         r.Name.ToLower().Contains(term) ||
                         r.CuisineType.ToLower().Contains(term) ||
-                        r.PriceRange.ToLower().Contains(term)
+                        (term == "$" && r.PriceRange == "$") ||
+                        (term == "$$" && r.PriceRange == "$$") ||
+                        (term == "$$$" && r.PriceRange == "$$$")
                     ));
                 }
 
