@@ -79,52 +79,67 @@
                     <div class="form-group">
                         <label for="ReservationTime">Reservation Time</label>
                         <select class="form-control" id="ReservationTime" name="ReservationTime" required>
-                            @* Generate options starting from the next full hour if the current time is later than 10 AM, or from 10 AM otherwise *@
-                            @{
-                                // Determine the start time based on current time
-                                DateTime startTime;
-                                if (DateTime.Now.Hour < 10)
-                                {
-                                    startTime = DateTime.Today.AddHours(10); // Start at 10 AM if it's before 10 AM
-                                }
-                                else
-                                {
-                                    // Start from the next full hour after the current time
-                                    startTime = DateTime.Now.AddMinutes(60 - DateTime.Now.Minute).AddHours(1);
-                                }
-                                DateTime endTime = DateTime.Today.AddHours(21); // Up to 8 PM
-                                for (DateTime time = startTime; time <= endTime; time = time.AddHours(1))
-                                {
-                                    <option value="@time.ToString("HH:mm")">@time.ToString("HH:mm")</option>
-                                }
-                            }
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <div class="row text-center mt-4">
-                <div class="col-md-6">
-                    <a asp-controller="Booking" asp-action="Return" class="btn btn-secondary btn-lg w-100">Return</a>
-                </div>
-                <div class="col-md-6">
-                    <button type="submit" class="btn btn-lg btn-success w-100">Confirm</button>
+                <div class="row text-center mt-4">
+                    <div class="col-md-6">
+                        <a asp-controller="Booking" asp-action="Return"
+                            class="btn btn-secondary btn-lg w-100">Return</a>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-lg btn-success w-100">Confirm</button>
+                    </div>
                 </div>
             </div>
-        </div>
+         </div>
     </form>
 </div>
 
 <script>
     flatpickr("#ReservationDate", {
-        minDate: "today",
-        disable: [
-            function (date) {
-                return date < new Date();
+    minDate: "today",
+    disable: [
+        function (date) {
+            return date < new Date().setHours(0, 0, 0, 0);
+        }
+    ],
+    dateFormat: "Y-m-d",
+    onChange: function (selectedDates, dateStr, instance) {
+        updateTimeSlots(selectedDates[0]);
+    }
+ });
+
+    function updateTimeSlots(selectedDate) {
+        const timeSelect = document.getElementById("ReservationTime");
+        timeSelect.innerHTML = ''; 
+        const currentDate = new Date();
+        const selectedDateTime = new Date(selectedDate);
+
+        const isToday = currentDate.toDateString() === selectedDateTime.toDateString();
+        const startTime = new Date(selectedDateTime.setHours(10, 0, 0, 0)); 
+        const endTime = new Date(selectedDateTime.setHours(20, 0, 0, 0)); 
+
+        for (let time = startTime; time <= endTime; time.setHours(time.getHours() + 1)) {
+            const option = document.createElement("option");
+            const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            if (isToday && time < currentDate) {
+                option.disabled = true;
+                option.text = timeString;
+            } else if (isToday && currentDate.getMinutes() + 30 > time.getMinutes() && currentDate.getHours() === time.getHours()) {
+                option.disabled = true;
+                option.text = timeString;
+            } else {
+                option.disabled = false;
+                option.text = timeString;
             }
-        ],
-        dateFormat: "Y-m-d"
-    });
+
+            timeSelect.appendChild(option);
+        }
+    }
+    updateTimeSlots(new Date());
 </script>
 
 <!-- Custom CSS for Additional Styling -->
