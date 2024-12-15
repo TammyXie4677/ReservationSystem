@@ -17,7 +17,7 @@ public class AdminBookingController : Controller
 
     // view all bookings + filter and search functionality
     [HttpGet]
-    public IActionResult Index(string? restaurantName, DateTime? bookingDate)
+    public IActionResult Index(string? Name, DateTime? BookingDate)
     {
         var bookings = _context.Bookings
             .Include(b => b.Restaurant)
@@ -25,20 +25,38 @@ public class AdminBookingController : Controller
             .AsQueryable();
 
         // filter restaurant name
-        if (!string.IsNullOrEmpty(restaurantName))
+        if (!string.IsNullOrEmpty(Name) && Name.Length >= 2)
         {
-            bookings = bookings.Where(b => b.Restaurant.Name.Contains(restaurantName));
+            bookings = bookings.Where(b => b.Restaurant.Name.Contains(Name));
         }
 
         // filter booking date
         if (bookingDate.HasValue)
         {
-            bookings = bookings.Where(b => b.BookingDate.Date == bookingDate.Value.Date);
+            bookings = bookings.Where(b => b.BookingDate.Date == BookingDate.Value.Date);
         }
 
         return View(bookings.ToList());
     }
 
+    // API for restaurant name auto-complete
+        [HttpGet]
+        public JsonResult GetRestaurantNames(string term)
+        {
+            // Minimum input length check
+            if (string.IsNullOrEmpty(term) || term.Length < 2)
+            {
+                return Json(new List<string>());
+            }
+
+            var restaurantNames = _context.Restaurants
+                .Where(r => r.Name.Contains(term)) // Use StartsWith for prefix matching
+                .Select(r => new { Name = r.Name, Address = r.Address })
+                .ToList();
+
+            return Json(restaurantNames);
+        }
+    
     // create booking - show form
     [HttpGet]
     public IActionResult Create()
@@ -46,7 +64,7 @@ public class AdminBookingController : Controller
         ViewBag.Restaurants = _context.Restaurants.ToList();
         return View();
     }
-
+    
     // create booking - submit form
     [HttpPost]
     [ValidateAntiForgeryToken]
