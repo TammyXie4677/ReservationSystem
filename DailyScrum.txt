@@ -110,7 +110,10 @@ Example entries for one day, both team members:
 
 2024/12/14 Kejia Li
 1. Done / not done since last scrum:
+- searching optimization
+- improve ui
 2. To do until next Scrum:
-
+- finish editing
+- start working on creating
 3. Need assistance / figure things out
-- 
+- can't save updated info to db
