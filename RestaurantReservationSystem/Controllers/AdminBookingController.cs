@@ -31,7 +31,7 @@ public class AdminBookingController : Controller
         }
 
         // filter booking date
-        if (bookingDate.HasValue)
+        if (BookingDate.HasValue)
         {
             bookings = bookings.Where(b => b.BookingDate.Date == BookingDate.Value.Date);
         }
