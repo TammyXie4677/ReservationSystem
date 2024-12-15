@@ -1,17 +1,26 @@
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
+
 @model IEnumerable<RestaurantReservationSystem.Models.Booking>
 
 @{
     ViewData["Title"] = "Manage Bookings";
 }
 
-<h1>Manage Bookings</h1>
+<h1>Manage Reservations</h1>
 
 <form method="get">
-    <label for="restaurantName">Restaurant Name:</label>
-    <input type="text" id="restaurantName" name="Name" value="@Context.Request.Query["Name"]" />
-
-    <label for="bookingDate">Booking Date:</label>
-    <input type="date" id="bookingDate" name="BookingDate" value="@Context.Request.Query["BookingDate"]" />
+    <div>
+        <label for="restaurantName">Restaurant Name:</label>
+        <input type="text" id="restaurantName" name="Name" value="@Context.Request.Query["Name"]" />
+        <small id="nameError" style="color: red; display: none;">Please enter at least 2 characters.</small>
+    </div>
+    <div>
+        <label for="bookingDate">Booking Date:</label>
+        <input type="date" id="bookingDate" name="BookingDate" value="@Context.Request.Query["BookingDate"]" />
+    </div>
 
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
@@ -21,7 +30,7 @@
         <tr>
             <th>Customer</th>
             <th>Restaurant</th>
-            <th>Date</th>
+            <th>Date & Time</th>
             <th>Guests</th>
             <th>Actions</th>
         </tr>
@@ -32,7 +41,7 @@
             <tr>
                 <td>@booking.User.FirstName @booking.User.LastName</td>
                 <td>@booking.Restaurant.Name</td>
-                <td>@booking.BookingDate.ToString("yyyy-MM-dd")</td>
+                <td>@booking.BookingDate.ToString("yyyy-MM-dd  HH:mm")</td>
                 <td>@booking.GuestsCount</td>
                 <td>
                     <a href="/AdminBooking/Edit/@booking.BookingId" class="btn btn-secondary">Edit</a>
@@ -44,3 +53,73 @@
         }
     </tbody>
 </table>
+
+<script>
+    $("#restaurantName").autocomplete({
+    source: function (request, response) {
+        $.ajax({
+            url: '/AdminBooking/GetRestaurantNames',
+            data: { term: request.term },
+            success: function (data) {
+                //for testing purposes
+                console.log("Request Term:", request.term);
+                console.log("Returned Data:", data); 
+                //response(data);
+                response($.map(data, function (item) {
+                    return {
+                        label: item.name + " (" + item.address + ")",
+                        value: item.name // value is what will be set in the textbox
+                    };
+                }));
+            }
+        });
+    },
+    minLength: 2
+    });
+
+    // Real-time validation for restaurant name input
+    $("#restaurantName").on("input", function () {
+        const nameInput = $(this).val();
+        const errorElement = $("#nameError");
+
+        if (nameInput.length > 0 && nameInput.length < 2) {
+            errorElement.show();
+        } else {
+            errorElement.hide();
+        }
+    });
+
+    // Form validation to ensure at least 2 characters for restaurant name
+    $("#searchForm").on("submit", function (event) {
+        const nameInput = $("#restaurantName").val();
+        if (nameInput && nameInput.length < 2) {
+            alert("Please enter at least 2 characters for the restaurant name.");
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+</script>
+<style>
+    h1 {
+        margin-bottom: 1.5rem; 
+    }
+    form {
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: 4rem;   
+    }
+    form div {
+        display: flex;
+        align-items: center; 
+        border-radius: 5px;
+        margin-bottom: 1rem;
+    }
+    form label {
+        margin-right: 1rem; 
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    form input{
+        border-radius: 5px; 
+        padding: 0.3rem 1rem; 
+    }
+</style>
