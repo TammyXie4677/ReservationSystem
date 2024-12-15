@@ -92,7 +92,13 @@ Example entries for one day, both team members:
 
 2024/12/14 Yunting Xie
 1. Done / not done since last scrum:
+- Customer can view restaurant list
+- Customer can search restaurant by name/cuisine type/price range
+- Customer can make the reservation 
+- Customer can view the reservation
 2. To do until next Scrum:
+- Customer can confirm the reservation
+- Customer can edit and delete the reservation
 3. Need assistance / figure things out
 - 
 
