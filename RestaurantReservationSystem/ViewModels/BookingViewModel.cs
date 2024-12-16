@@ -6,6 +6,7 @@ namespace RestaurantReservationSystem.ViewModels
     {
         // RestaurantId to store the restaurant's ID for booking purposes
         public int RestaurantId { get; set; }
+        public int BookingId { get; set; }
 
         // User details filled from the logged-in user
         [Required(ErrorMessage = "First Name is required.")]
@@ -33,5 +34,7 @@ namespace RestaurantReservationSystem.ViewModels
         [Required(ErrorMessage = "Number of guests is required.")]
         [Range(1, 20, ErrorMessage = "Number of guests must be between 1 and 20.")]
         public int Guests { get; set; }
+        
+        public int Status { get; set; }
     }
 }
