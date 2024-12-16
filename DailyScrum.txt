@@ -118,8 +118,39 @@ Example entries for one day, both team members:
 1. Done / not done since last scrum:
 - searching optimization
 - improve ui
+- admin can delete reservation
 2. To do until next Scrum:
 - finish editing
 - start working on creating
 3. Need assistance / figure things out
 - can't save updated info to db
+
+
+2024/12/15 Yunting Xie
+1. Done / not done since last scrum:
+- 
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
+
+2024/12/15 Qiutian Wang
+1. Done / not done since last scrum:
+- 
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
+
+2024/12/15 Kejia Li
+1. Done / not done since last scrum:
+- admin can view all restaurant
+- admin can create new restaurant
+- admin still can't edit reservation
+2. To do until next Scrum:
+- finish restaurant editing
+- finish restaurant deleting
+3. Need assistance / figure things out
+- can't save updated info to db 
+- failed to change price range and cuisine type to enum
+
