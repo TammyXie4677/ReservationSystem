@@ -4,225 +4,177 @@
     ViewData["Title"] = "Reserve a Table";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<div class="container mt-5">
-    <!-- Restaurant Details -->
-    <div class="row mb-4">
-        <div class="col-md-6 mx-auto">
-            <div class="card shadow-lg border-light rounded">
-                <div class="card-body">
-                    <h5 class="card-title text-center mb-3">Reserve a Table</h5>
-                    <p><strong>Restaurant:</strong> @ViewBag.RestaurantName</p>
-                    <p><strong>Address:</strong> @ViewBag.RestaurantAddress</p>
-                    <p><strong>Phone:</strong> @ViewBag.RestaurantPhone</p>
-                    <p><strong>Email:</strong> @ViewBag.RestaurantEmail</p>
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="card shadow-lg border-0 p-4" style="max-width: 720px; width: 100%; border-radius: 12px;">
+        <div class="card-header bg-white border-0 text-center pb-3">
+            <h2 class="text-dark mb-0">Reserve Your Table</h2>
+            <p class="text-muted small mt-2">@ViewBag.RestaurantName</p>
+            <p class="text-muted mb-1"><i class="bi bi-envelope"></i> @ViewBag.RestaurantEmail</p>
+            <p class="text-muted"><i class="bi bi-telephone"></i> @ViewBag.RestaurantPhone</p>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" asp-controller="Booking" method="post" class="needs-validation">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="RestaurantId" value="@Model.RestaurantId" />
+
+                <!-- Form Fields -->
+                <div class="row g-4">
+                    <!-- First Name -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="FirstName" class="form-control" id="FirstName" placeholder="First Name" readonly />
+                            <label for="FirstName">First Name</label>
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="LastName" class="form-control" id="LastName" placeholder="Last Name" readonly />
+                            <label for="LastName">Last Name</label>
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="PhoneNumber" class="form-control" id="PhoneNumber" placeholder="Phone Number" readonly />
+                            <label for="PhoneNumber">Phone Number</label>
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Email" class="form-control" id="Email" placeholder="Email" readonly />
+                            <label for="Email">Email</label>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Guests -->
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input asp-for="Guests" class="form-control" id="Guests" placeholder="Guests" min="1" max="20" required />
+                            <label for="Guests">Number of Guests</label>
+                            <span asp-validation-for="Guests" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Reservation Date -->
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input asp-for="ReservationDate" class="form-control flatpickr" id="ReservationDate" placeholder="" required />
+                            <label for="ReservationDate">Reservation Date</label>
+                            <span asp-validation-for="ReservationDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Reservation Time -->
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select asp-for="ReservationTime" class="form-select" id="ReservationTime" required>
+                                <option value="" disabled selected>Select a Time</option>
+                            </select>
+                            <label for="ReservationTime">Reservation Time</label>
+                            <span asp-validation-for="ReservationTime" class="text-danger small"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-controller="Booking" asp-action="Return" class="btn btn-outline-secondary px-4">Return</a>
+                    <button type="submit" class="btn btn-primary px-4">Reserve</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <!-- Reservation Form -->
-    <form asp-action="Create" asp-controller="Booking" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="RestaurantId" value="@Model.RestaurantId" />
-
-        <div class="row">
-            <!-- First Name -->
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label for="FirstName">First Name</label>
-                    <input asp-for="FirstName" class="form-control" required />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Last Name -->
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label for="LastName">Last Name</label>
-                    <input asp-for="LastName" class="form-control" required />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Phone Number -->
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label for="PhoneNumber">Phone Number</label>
-                    <input asp-for="PhoneNumber" class="form-control" required />
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Email -->
-            <div class="col-md-6 mx-auto">
-                <div class="form-group">
-                    <label for="Email">Email</label>
-                    <input asp-for="Email" class="form-control" required />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Guests -->
-            <div class="col-md-4 mx-auto">
-                <div class="form-group">
-                    <label for="Guests">Number of Guests</label>
-                    <input asp-for="Guests" class="form-control" min="1" max="20" required />
-                    <span asp-validation-for="Guests" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Reservation Date -->
-            <div class="col-md-4 mx-auto">
-                <div class="form-group">
-                    <label for="ReservationDate">Reservation Date</label>
-                    <input asp-for="ReservationDate" class="form-control flatpickr" required />
-                    <span asp-validation-for="ReservationDate" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Reservation Time -->
-            <div class="col-md-4 mx-auto">
-                <div class="form-group">
-                    <label for="ReservationTime">Reservation Time</label>
-                    <select asp-for="ReservationTime" class="form-control" required>
-                        <option value="" disabled selected>Select a Time</option>
-                    </select>
-                    <span asp-validation-for="ReservationTime" class="text-danger"></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="row text-center mt-4">
-            <div class="col-md-6">
-                <a asp-controller="Booking" asp-action="Return" class="btn btn-secondary btn-lg w-100">Return</a>
-            </div>
-            <div class="col-md-6">
-                <button type="submit" class="btn btn-lg btn-success w-100">Reserve</button>
-            </div>
-        </div>
-    </form>
 </div>
 
 <script>
     flatpickr("#ReservationDate", {
-    minDate: "today",
-    disable: [
-        function (date) {
-            return date < new Date().setHours(0, 0, 0, 0);
+        minDate: "today",
+        disable: [
+            function (date) {
+                return date < new Date().setHours(0, 0, 0, 0);
+            }
+        ],
+        dateFormat: "Y-m-d",
+        onChange: function (selectedDates, dateStr, instance) {
+            updateTimeSlots(selectedDates[0]);
         }
-    ],
-    dateFormat: "Y-m-d",
-    onChange: function (selectedDates, dateStr, instance) {
-        updateTimeSlots(selectedDates[0]);
-    }
- });
+    });
 
     function updateTimeSlots(selectedDate) {
         const timeSelect = document.getElementById("ReservationTime");
-        timeSelect.innerHTML = ''; 
+        timeSelect.innerHTML = '';
         const currentDate = new Date();
         const selectedDateTime = new Date(selectedDate);
 
         const isToday = currentDate.toDateString() === selectedDateTime.toDateString();
-        const startTime = new Date(selectedDateTime.setHours(10, 0, 0, 0)); 
-        const endTime = new Date(selectedDateTime.setHours(20, 0, 0, 0)); 
+        const startTime = new Date(selectedDateTime.setHours(10, 0, 0, 0));
+        const endTime = new Date(selectedDateTime.setHours(20, 0, 0, 0));
 
         for (let time = startTime; time <= endTime; time.setHours(time.getHours() + 1)) {
             const option = document.createElement("option");
             const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            if (isToday && time < currentDate) {
-                option.disabled = true;
-                option.text = timeString;
-            } else if (isToday && currentDate.getMinutes() + 30 > time.getMinutes() && currentDate.getHours() === time.getHours()) {
-                option.disabled = true;
-                option.text = timeString;
-            } else {
-                option.disabled = false;
-                option.text = timeString;
-            }
-
+            option.disabled = isToday && time < currentDate;
+            option.text = timeString;
             timeSelect.appendChild(option);
         }
     }
     updateTimeSlots(new Date());
 </script>
 
-<!-- Custom CSS for Additional Styling -->
 <style>
     body {
-        font-family: 'Roboto', sans-serif;
-    }
-
-    .container {
-        max-width: 960px;
+        font-family: 'Poppins', sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
     }
 
     .card {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
 
-    .card-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #000000;
+    .form-floating label {
+        font-size: 0.85rem;
+        color: #6c757d;
     }
 
-    .form-group label {
-        font-weight: 500;
-        color: #495057;
-    }
-
-    .form-control {
+    .form-floating input,
+    .form-floating select {
         border-radius: 8px;
-        box-shadow: none;
-        padding: 10px;
-        font-size: 1rem;
-    }
-
-    .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+        font-size: 0.95rem;
     }
 
     .btn {
-        border-radius: 8px;
-        padding: 12px 20px;
-        font-size: 1.1rem;
+        transition: all 0.2s ease;
     }
 
-    .btn-success {
-        background-color: #28a745;
-        border: none;
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .btn-success:hover {
-        background-color: #218838;
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
     }
 
-    .mt-5 {
-        margin-top: 3rem !important;
-    }
-
-    .mb-4 {
-        margin-bottom: 2rem !important;
-    }
-
-    .text-primary {
-        color: #007bff !important;
-    }
-
-    .shadow-lg {
-        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-lg {
-        font-size: 1.2rem;
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
     }
 </style>
