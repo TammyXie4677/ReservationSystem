@@ -157,5 +157,81 @@ namespace RestaurantReservationSystem.Controllers
 
             return View(reservations);
         }
+
+        // GET: Edit
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var booking = _context.Bookings
+                .Include(b => b.Restaurant)
+                .SingleOrDefault(b => b.BookingId == id);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = _context.Users.SingleOrDefault(u => u.Email == userEmail);
+
+            if (user == null || user.UserId != booking.UserId)
+            {
+                return Forbid();
+            }
+
+            var model = new BookingViewModel
+            {
+                BookingId = booking.BookingId,
+                RestaurantId = booking.RestaurantId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Guests = booking.GuestsCount,
+                ReservationDate = booking.BookingDate.ToString("yyyy-MM-dd"),
+                ReservationTime = booking.BookingDate.ToString("HH:mm")
+            };
+
+            ViewBag.RestaurantName = booking.Restaurant.Name;
+            ViewBag.RestaurantAddress = booking.Restaurant.Address;
+            ViewBag.RestaurantPhone = booking.Restaurant.PhoneNumber;
+            ViewBag.RestaurantEmail = booking.Restaurant.Email;
+
+            return View(model);
+        }
+
+        // POST: Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(BookingViewModel model)
+        {
+            if (!DateTime.TryParseExact(model.ReservationDate + " " + model.ReservationTime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var bookingDate))
+            {
+                ModelState.AddModelError("ReservationDate", "Invalid reservation date or time.");
+            }
+
+            if (model.Guests < 1 || model.Guests > 20)
+            {
+                ModelState.AddModelError("Guests", "Number of guests must be between 1 and 20.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var booking = _context.Bookings.SingleOrDefault(b => b.BookingId == model.BookingId);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            booking.GuestsCount = model.Guests;
+            booking.BookingDate = bookingDate;
+            _context.SaveChanges();
+
+            return RedirectToAction("ReservationDetails");
+        }
     }
 }
