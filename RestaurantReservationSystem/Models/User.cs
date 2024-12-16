@@ -17,7 +17,7 @@ public partial class User
 
     public string LastName { get; set; } = null!;
 
-    public string? PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = null!;
 
     public DateTime? CreatedAt { get; set; }
 
