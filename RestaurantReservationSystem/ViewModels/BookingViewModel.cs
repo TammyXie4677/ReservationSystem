@@ -4,8 +4,10 @@ namespace RestaurantReservationSystem.ViewModels
 {
     public class BookingViewModel
     {
-        public int BookingId { get; set; }
+        // RestaurantId to store the restaurant's ID for booking purposes
+        public int RestaurantId { get; set; }
 
+        // User details filled from the logged-in user
         [Required(ErrorMessage = "First Name is required.")]
         public string FirstName { get; set; } = null!;
 
@@ -16,18 +18,20 @@ namespace RestaurantReservationSystem.ViewModels
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; } = null!;
 
-        // Phone number is required with format validation
         [Required(ErrorMessage = "Phone number is required.")]
-        [RegularExpression(@"^\(\d{3}\) \d{3}-\d{4}$", ErrorMessage = "Phone number must be in the format (xxx) xxx-xxxx.")]
-        public string? PhoneNumber { get; set; }
+        [RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "Phone number must be in the format xxx-xxx-xxxx.")]
+        public string PhoneNumber { get; set; } = null!;
 
-        // BookingDate is required
-        [Required(ErrorMessage = "Booking Date is required.")]
-        public DateTime BookingDate { get; set; }
+        // Date and time for the reservation
+        [Required(ErrorMessage = "Reservation Date is required.")]
+        public string ReservationDate { get; set; } = null!; // This will be a string in the view for date picker
 
-        // GuestsCount is required with a range
+        [Required(ErrorMessage = "Reservation Time is required.")]
+        public string ReservationTime { get; set; } = null!; // This will be a string for the time selection
+
+        // Number of guests for the reservation
         [Required(ErrorMessage = "Number of guests is required.")]
         [Range(1, 20, ErrorMessage = "Number of guests must be between 1 and 20.")]
-        public int GuestsCount { get; set; }
+        public int Guests { get; set; }
     }
 }

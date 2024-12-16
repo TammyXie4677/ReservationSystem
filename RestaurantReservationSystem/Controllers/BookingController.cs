@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantReservationSystem.Models;
+using RestaurantReservationSystem.ViewModels;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 
@@ -21,111 +23,139 @@ namespace RestaurantReservationSystem.Controllers
         [HttpGet]
         public IActionResult Reserve(int id)
         {
-            var restaurant = _context.Restaurants.FirstOrDefault(r => r.RestaurantId == id);
+            var restaurant = _context.Restaurants.Find(id);
 
             if (restaurant == null)
             {
-                return NotFound(); // Handle case where restaurant does not exist
+                return NotFound();
             }
 
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+            var user = _context.Users.SingleOrDefault(u => u.Email == userEmail);
 
             if (user == null)
             {
-                return NotFound(); // Handle case where user does not exist
+                return NotFound();
             }
 
-            ViewBag.RestaurantId = restaurant.RestaurantId;
             ViewBag.RestaurantName = restaurant.Name;
             ViewBag.RestaurantAddress = restaurant.Address;
             ViewBag.RestaurantPhone = restaurant.PhoneNumber;
             ViewBag.RestaurantEmail = restaurant.Email;
 
-            ViewBag.FirstName = user.FirstName;
-            ViewBag.LastName = user.LastName;
-            ViewBag.PhoneNumber = user.PhoneNumber;
-            ViewBag.Email = user.Email;
+            var model = new BookingViewModel
+            {
+                RestaurantId = restaurant.RestaurantId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Guests = 1
+            };
 
-            return View("Create");
+            return View("Create", model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(int RestaurantId, string FirstName, string LastName, string PhoneNumber, string Email,
-                            int Guests, string ReservationDate, string ReservationTime)
+        public IActionResult Create(BookingViewModel model)
         {
-            if (!DateTime.TryParse(ReservationDate, out var datePart))
+            // Validate ReservationDate and ReservationTime
+            if (!DateTime.TryParseExact(model.ReservationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var datePart))
             {
                 ModelState.AddModelError("ReservationDate", "Invalid reservation date.");
             }
 
-            if (!TimeSpan.TryParse(ReservationTime, out var timePart))
+            if (!TimeSpan.TryParseExact(model.ReservationTime, @"hh\:mm", CultureInfo.InvariantCulture, out var timePart))
             {
                 ModelState.AddModelError("ReservationTime", "Invalid reservation time.");
             }
 
-            if (!ModelState.IsValid)
+            // Validate number of guests
+            if (model.Guests < 1 || model.Guests > 20)
             {
-                return View("Create");
+                ModelState.AddModelError("Guests", "Number of guests must be between 1 and 20.");
             }
 
-            // Combine date and time
+            // If model state is invalid, return with errors
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    // Log or inspect the error
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                return View(model);
+            }
+
+            // Combine the parsed date and time into a single DateTime (BookingDate)
             var bookingDate = datePart.Add(timePart);
 
-            // Retrieve the logged-in user's details
+            // Find the current user
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+            var user = _context.Users.SingleOrDefault(u => u.Email == userEmail);
 
             if (user == null)
             {
-                return NotFound(); // Handle case where user does not exist
+                return NotFound();
             }
 
-            // Create a new booking object
+            // ViewBag to pass updated model to the view
+            ViewBag.UpdatedBookingData = new BookingViewModel
+            {
+                RestaurantId = model.RestaurantId,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Email = model.Email,
+                Guests = model.Guests,
+                ReservationDate = model.ReservationDate,
+                ReservationTime = model.ReservationTime
+            };
+
+            // Create the booking object
             var booking = new Booking
             {
                 UserId = user.UserId,
-                RestaurantId = RestaurantId,
+                RestaurantId = model.RestaurantId,
                 BookingDate = bookingDate,
-                GuestsCount = Guests,
+                GuestsCount = model.Guests,
                 Status = 1, // Assuming 1 represents a "confirmed" booking status
                 CreatedAt = DateTime.Now
             };
 
-            // Add the booking to the database
+            // Save the booking to the database
             _context.Bookings.Add(booking);
             _context.SaveChanges();
 
-            // Redirect to the ReservationDetails page instead of CustomerDashboard
+            // Redirect to the ReservationDetails page
             return RedirectToAction("ReservationDetails", "Booking");
         }
+
 
         public IActionResult Return()
         {
             return RedirectToAction("CustomerDashboard", "Customer");
         }
 
-        [Authorize(Roles = "Customer")]
+        [HttpGet]
         public IActionResult ReservationDetails()
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+            var user = _context.Users.SingleOrDefault(u => u.Email == userEmail);
 
             if (user == null)
             {
-                return NotFound(); // Handle case where user does not exist
+                return NotFound();
             }
 
-            // Fetch all bookings for the logged-in user
             var reservations = _context.Bookings
                 .Where(b => b.UserId == user.UserId)
-                .Include(b => b.Restaurant)  // Include restaurant details in the booking
+                .Include(b => b.Restaurant)
                 .OrderBy(b => b.BookingDate)
                 .ToList();
 
-            return View(reservations); // Pass the reservations to the view
+            return View(reservations);
         }
-
     }
 }

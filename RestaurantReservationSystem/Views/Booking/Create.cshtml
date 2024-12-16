@@ -1,3 +1,5 @@
+@model RestaurantReservationSystem.ViewModels.BookingViewModel
+
 @{
     ViewData["Title"] = "Reserve a Table";
 }
@@ -6,8 +8,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<!-- Restaurant Details Container -->
 <div class="container mt-5">
+    <!-- Restaurant Details -->
     <div class="row mb-4">
         <div class="col-md-6 mx-auto">
             <div class="card shadow-lg border-light rounded">
@@ -21,79 +23,88 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Reservation Form Container -->
-<div class="container mt-5">
-    <form asp-controller="Booking" asp-action="Create" method="post" class="mt-4">
-        <input type="hidden" name="RestaurantId" value="@ViewBag.RestaurantId" />
+    <!-- Reservation Form -->
+    <form asp-action="Create" asp-controller="Booking" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="RestaurantId" value="@Model.RestaurantId" />
 
         <div class="row">
+            <!-- First Name -->
             <div class="col-md-6 mx-auto">
                 <div class="form-group">
                     <label for="FirstName">First Name</label>
-                    <input type="text" class="form-control" id="FirstName" name="FirstName" value="@ViewBag.FirstName"
-                        required />
+                    <input asp-for="FirstName" class="form-control" required />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
             </div>
 
+            <!-- Last Name -->
             <div class="col-md-6 mx-auto">
                 <div class="form-group">
                     <label for="LastName">Last Name</label>
-                    <input type="text" class="form-control" id="LastName" name="LastName" value="@ViewBag.LastName"
-                        required />
+                    <input asp-for="LastName" class="form-control" required />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
 
+            <!-- Phone Number -->
             <div class="col-md-6 mx-auto">
                 <div class="form-group">
                     <label for="PhoneNumber">Phone Number</label>
-                    <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber"
-                        value="@ViewBag.PhoneNumber" required />
+                    <input asp-for="PhoneNumber" class="form-control" required />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
             </div>
 
+            <!-- Email -->
             <div class="col-md-6 mx-auto">
                 <div class="form-group">
                     <label for="Email">Email</label>
-                    <input type="email" class="form-control" id="Email" name="Email" value="@ViewBag.Email" required />
+                    <input asp-for="Email" class="form-control" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-4 mx-auto">
-                    <div class="form-group">
-                        <label for="Guests">Number of Guests</label>
-                        <input type="number" class="form-control" id="Guests" name="Guests" min="1" max="20" required />
-                    </div>
-                </div>
-
-                <div class="col-md-4 mx-auto">
-                    <div class="form-group">
-                        <label for="ReservationDate">Reservation Date</label>
-                        <input type="text" class="form-control" id="ReservationDate" name="ReservationDate" required />
-                    </div>
-                </div>
-
-                <div class="col-md-4 mx-auto">
-                    <div class="form-group">
-                        <label for="ReservationTime">Reservation Time</label>
-                        <select class="form-control" id="ReservationTime" name="ReservationTime" required>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row text-center mt-4">
-                    <div class="col-md-6">
-                        <a asp-controller="Booking" asp-action="Return"
-                            class="btn btn-secondary btn-lg w-100">Return</a>
-                    </div>
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-lg btn-success w-100">Reserve</button>
-                    </div>
+            <!-- Guests -->
+            <div class="col-md-4 mx-auto">
+                <div class="form-group">
+                    <label for="Guests">Number of Guests</label>
+                    <input asp-for="Guests" class="form-control" min="1" max="20" required />
+                    <span asp-validation-for="Guests" class="text-danger"></span>
                 </div>
             </div>
-         </div>
+
+            <!-- Reservation Date -->
+            <div class="col-md-4 mx-auto">
+                <div class="form-group">
+                    <label for="ReservationDate">Reservation Date</label>
+                    <input asp-for="ReservationDate" class="form-control flatpickr" required />
+                    <span asp-validation-for="ReservationDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Reservation Time -->
+            <div class="col-md-4 mx-auto">
+                <div class="form-group">
+                    <label for="ReservationTime">Reservation Time</label>
+                    <select asp-for="ReservationTime" class="form-control" required>
+                        <option value="" disabled selected>Select a Time</option>
+                    </select>
+                    <span asp-validation-for="ReservationTime" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row text-center mt-4">
+            <div class="col-md-6">
+                <a asp-controller="Booking" asp-action="Return" class="btn btn-secondary btn-lg w-100">Return</a>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-lg btn-success w-100">Reserve</button>
+            </div>
+        </div>
     </form>
 </div>
 
