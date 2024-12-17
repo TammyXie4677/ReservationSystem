@@ -21,6 +21,10 @@
                 <p class="text-muted"><i class="bi bi-telephone"></i> @ViewBag.RestaurantPhone</p>
             </div>
 
+            <div id="reminderMessage" class="alert alert-info" role="alert" style="display: none">
+            * Must select a reservation date before changing the reservation time.
+            </div>
+
             <!-- Form -->
             <form asp-action="Edit" asp-controller="Booking" method="post">
                 @Html.AntiForgeryToken()
@@ -211,6 +215,7 @@
             saveChangesBtn.style.display = "inline-block";  // Show Save Changes button
             pastDateAlert.style.display = "none";       // Hide alert
             pastDateAlert.style.visibility = "hidden";
+            reminderMessage.style.display = "block"; 
         }
     }
 
