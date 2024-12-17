@@ -91,13 +91,13 @@
                     <div class="col-md-6">
                         <div class="form-floating">
                             <select asp-for="ReservationTime" id="ReservationTime" class="form-control" required>
-                                <option value="" disabled selected>Select a Time</option>
+                                <option value="@Model.ReservationTime" selected>@Model.ReservationTime</option>
                             </select>
                             <label for="ReservationTime">Reservation Time</label>
                             <span asp-validation-for="ReservationTime" class="text-danger small"></span>
                         </div>
                     </div>
- 
+
                     <!-- Reservation Status -->
                     <div class="col-md-6">
                         <div class="form-floating">
@@ -139,30 +139,49 @@
         minDate: "today",
         dateFormat: "Y-m-d",
         onChange: function (selectedDates) {
-            updateTimeSlots(selectedDates[0]);
-            checkReservationDate(selectedDates[0]);  // Call the function to check the date
+            updateTimeSlots(selectedDates[0]);  // Update available times based on the selected date
+            checkReservationDateAndStatus(selectedDates[0]);  // Check and update button visibility
         }
     });
 
+    // Function to populate available time slots based on the selected date
     function updateTimeSlots(selectedDate) {
         const timeSelect = document.getElementById("ReservationTime");
-        timeSelect.innerHTML = '';
+        timeSelect.innerHTML = '';  // Clear previous options
 
         const currentTime = new Date();
         const selectedDay = new Date(selectedDate);
         const isToday = currentTime.toDateString() === selectedDay.toDateString();
-        const startTime = new Date(selectedDay.setHours(10, 0, 0));
-        const endTime = new Date(selectedDay.setHours(20, 0, 0));
+        const startTime = new Date(selectedDay.setHours(10, 0, 0));  // Start at 10:00 AM
+        const endTime = new Date(selectedDay.setHours(20, 0, 0));   // End at 8:00 PM
 
+        // Loop through the available times
         for (let time = startTime; time <= endTime; time.setHours(time.getHours() + 1)) {
             const option = document.createElement("option");
             const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
             option.text = formattedTime;
+            option.value = formattedTime;  // Set value to the formatted time
+
+            // Disable past times if the selected date is today
             option.disabled = isToday && time < currentTime;
+
             timeSelect.appendChild(option);
         }
+
+        // Enable the time dropdown after a date is selected
+        timeSelect.disabled = false;
     }
-    updateTimeSlots(new Date());
+
+    // Initialize the page with the current reservation time already populated
+    window.addEventListener('DOMContentLoaded', function () {
+        const initialReservationTime = document.getElementById("ReservationTime").value;
+        if (initialReservationTime) {
+            // If there's already a reservation time, just show it in the dropdown
+            const timeSelect = document.getElementById("ReservationTime");
+            timeSelect.disabled = false;  // Ensure the dropdown is not disabled
+        }
+    });
 
     // New function to check reservation date and status, and update button states
     function checkReservationDateAndStatus(reservationDate, status) {
@@ -197,7 +216,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const reservationInput = document.getElementById("ReservationDate").value;
-        const reservationStatus = parseInt(document.getElementById("ReservationStatus").value, 10); 
+        const reservationStatus = parseInt(document.getElementById("ReservationStatus").value, 10);
 
         if (reservationInput) {
             // Convert reservationInput (string) into a Date object
