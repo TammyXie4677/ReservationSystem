@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantReservationSystem.Models;
+using System.Globalization;
 
 namespace RestaurantReservationSystem.Controllers;
 
@@ -110,6 +111,43 @@ public class AdminBookingController : Controller
 
         ViewBag.Restaurants = _context.Restaurants.ToList();
         return View(booking);
+    }
+
+    [HttpPost]
+    public IActionResult SaveBooking(int bookingId, string restaurant, DateTime bookingDate, int guestsCount)
+    {
+        try
+        {
+            Console.WriteLine($"Received Booking Date: {bookingDate}");
+            // Validate the booking date
+        if (bookingDate == default(DateTime))
+        {
+            return Json(new { success = false, message = "Invalid booking date format." });
+        }
+            var booking = _context.Bookings.Include(b => b.Restaurant).Include(b => b.User).FirstOrDefault(b => b.BookingId == bookingId);
+            if (booking != null)
+            {
+                if (booking.Restaurant != null)
+                {
+                    booking.Restaurant.Name = restaurant; 
+                }
+                booking.BookingDate = bookingDate;
+                booking.GuestsCount = guestsCount;
+                // Update the UpdatedAt field
+                booking.UpdatedAt = DateTime.UtcNow;
+
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Booking not found." });
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            return Json(new { success = false, message = ex.Message });
+        }
+
     }
 
     // delete booking
