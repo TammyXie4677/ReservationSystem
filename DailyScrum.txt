@@ -175,8 +175,9 @@ Example entries for one day, both team members:
 
 2024/12/16 Kejia Li
 1. Done / not done since last scrum:
-- 
+- worked on Azure Blob configuration
 2. To do until next Scrum:
-- 
+- admin can edit restaurant
+- admin can upload logo to azure
 3. Need assistance / figure things out
 - 
