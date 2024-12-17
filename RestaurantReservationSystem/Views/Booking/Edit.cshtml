@@ -231,6 +231,28 @@
             checkReservationDateAndStatus(reservationDate, reservationStatus);
         }
     });
+
+    function confirmDelete(bookingId) {
+    if (confirm("Are you sure you want to delete this reservation?")) {
+        // Send an AJAX request to delete the booking
+        $.ajax({
+            url: '@Url.Action("Delete", "Booking")',  
+            type: 'POST',
+            data: { id: bookingId },
+            success: function(response) {
+                if (response.success) {
+                    alert("Reservation deleted successfully.");
+                    window.location.href = '@Url.Action("ReservationDetails", "Booking")'; 
+                } else {
+                    alert("Error deleting the reservation.");
+                }
+            },
+            error: function() {
+                alert("An error occurred while deleting the reservation.");
+            }
+        });
+    }
+}
 </script>
 
 <style>

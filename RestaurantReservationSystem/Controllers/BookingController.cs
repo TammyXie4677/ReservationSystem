@@ -240,5 +240,32 @@ namespace RestaurantReservationSystem.Controllers
 
             return RedirectToAction("ReservationDetails");
         }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var booking = _context.Bookings.SingleOrDefault(b => b.BookingId == id);
+
+            if (booking == null)
+            {
+                return Json(new { success = false, message = "Booking not found." });
+            }
+
+            // Ensure the user is authorized to delete this booking
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = _context.Users.SingleOrDefault(u => u.Email == userEmail);
+
+            if (user == null || user.UserId != booking.UserId)
+            {
+                return Json(new { success = false, message = "You are not authorized to delete this booking." });
+            }
+
+            // Delete the booking
+            _context.Bookings.Remove(booking);
+            _context.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
     }
 }
