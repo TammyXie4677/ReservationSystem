@@ -23,7 +23,7 @@
                 <td>@reservation.GuestsCount</td>
                 <td>@(reservation.Status == 1 ? "Confirmed" : "Canceled")</td>
                 <td>
-                    <a href="@Url.Action("Edit", "Booking", new { id = reservation.BookingId })" class="btn btn-info btn-sm">View</a>
+                    <a href="@Url.Action("Edit", "Booking", new { id = reservation.BookingId })" class="btn btn-info btn-sm">Modify</a>
                 </td>
             </tr>
         }
