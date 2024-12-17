@@ -100,9 +100,23 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex justify-content-between mt-4">
-                    <a asp-controller="Booking" asp-action="Return" class="btn btn-outline-secondary me-3">Return</a>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a asp-controller="Booking" asp-action="Return" class="btn btn-outline-secondary">Return</a>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+                        <button type="button" class="btn btn-danger" id="CancelBtn">Cancel</button>
+                        <button type="button" id="deleteBtn" class="btn btn-danger" style="display: none;"
+                            onclick="confirmDelete(@Model.BookingId)">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="pastDateAlert" class="alert alert-warning d-flex align-items-center mt-3"
+                    style="display: none; border: 1px solid #ffc107; background-color: #fff8e1; color: #856404; border-radius: 8px; padding: 12px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem; color: #ffc107;"></i>
+                    <div>This reservation is in the past. You can only delete it.</div>
                 </div>
             </form>
         </div>
@@ -115,6 +129,7 @@
         dateFormat: "Y-m-d",
         onChange: function (selectedDates) {
             updateTimeSlots(selectedDates[0]);
+            checkReservationDate(selectedDates[0]);  // Call the function to check the date
         }
     });
 
@@ -137,6 +152,49 @@
         }
     }
     updateTimeSlots(new Date());
+
+    // New function to check reservation date and update button states
+    function checkReservationDate(reservationDate) {
+        const deleteBtn = document.getElementById("deleteBtn");
+        const saveChangesBtn = document.getElementById("saveChangesBtn");
+        const cancelBtn = document.getElementById("CancelBtn");
+        const pastDateAlert = document.getElementById("pastDateAlert");
+
+        if (!reservationDate) {
+            console.warn("ReservationDate is empty or invalid.");
+            return;
+        }
+
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+
+        const selectedDate = new Date(reservationDate);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        if (selectedDate < currentDate) {
+            deleteBtn.style.display = "inline-block";
+            saveChangesBtn.style.display = "none";  // Hide Save button
+            cancelBtn.style.display = "none";       // Hide Cancel button
+            pastDateAlert.style.display = "block";  // Show alert
+        } else {
+            deleteBtn.style.display = "none";
+            saveChangesBtn.style.display = "inline-block";  // Show Save button
+            cancelBtn.style.display = "inline-block";      // Show Cancel button
+            pastDateAlert.style.display = "none";          // Hide alert
+            pastDateAlert.style.visibility = "hidden";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const reservationInput = document.getElementById("ReservationDate").value;
+        if (reservationInput) {
+            // Convert reservationInput (string) into a Date object
+            const reservationDate = new Date(reservationInput);
+
+            // Pass the Date object to the checkReservationDate function
+            checkReservationDate(reservationDate);
+        }
+    });
 </script>
 
 <style>
