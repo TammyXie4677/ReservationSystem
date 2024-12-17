@@ -181,3 +181,31 @@ Example entries for one day, both team members:
 - admin can upload logo to azure
 3. Need assistance / figure things out
 - 
+
+
+2024/12/17 Yunting Xie
+1. Done / not done since last scrum:
+- Customer can cancel the reservation
+- Customer can delete the reservation
+2. To do until next Scrum:
+- Test reservation editing
+- Customer can send Email
+- Customer can view restaurant logo
+3. Need assistance / figure things out
+- 
+
+2024/12/17 Qiutian Wang
+1. Done / not done since last scrum:
+- 
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
+
+2024/12/17 Kejia Li
+1. Done / not done since last scrum:
+- 
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
