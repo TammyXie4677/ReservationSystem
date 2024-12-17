@@ -128,9 +128,9 @@ Example entries for one day, both team members:
 
 2024/12/15 Yunting Xie
 1. Done / not done since last scrum:
-- 
+- Test customer can reserve a table
 2. To do until next Scrum:
-- 
+- Customer can motify the reservation
 3. Need assistance / figure things out
 - 
 
@@ -154,3 +154,29 @@ Example entries for one day, both team members:
 - can't save updated info to db 
 - failed to change price range and cuisine type to enum
 
+
+2024/12/16 Yunting Xie
+1. Done / not done since last scrum:
+- Customer can edit reservation
+2. To do until next Scrum:
+- Test reservation editing
+- Customer can cancel the reservation
+- Customer can delete the reservation
+3. Need assistance / figure things out
+- 
+
+2024/12/16 Qiutian Wang
+1. Done / not done since last scrum:
+- 
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
+
+2024/12/16 Kejia Li
+1. Done / not done since last scrum:
+- 
+2. To do until next Scrum:
+- 
+3. Need assistance / figure things out
+- 
