@@ -19,6 +19,7 @@ public partial class Restaurant
 
     public string PriceRange { get; set; } = null!;
 
+    public string? LogoUrl { get; set; }
     public DateTime? CreatedAt { get; set; }
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
