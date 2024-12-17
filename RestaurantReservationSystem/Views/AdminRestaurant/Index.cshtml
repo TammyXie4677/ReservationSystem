@@ -1,0 +1,49 @@
+@model IEnumerable<RestaurantReservationSystem.Models.Restaurant>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewData["Title"] = "Restaurants";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+<h2>Restaurants</h2>
+
+<p>
+    <a class="btn btn-primary" href="@Url.Action("Create")">Create New Restaurant</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Logo</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Cuisine Type</th>
+            <th>Price Range</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var restaurant in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@restaurant.LogoUrl" alt="Logo" style="width: 100px; height: auto;" />
+                </td>
+                <td>@restaurant.Name</td>
+                <td>@restaurant.Address</td>
+                <td>@restaurant.CuisineType</td>
+                <td>@restaurant.PriceRange</td>
+                <td>
+                    <a class="btn btn-info" href="@Url.Action("Details", new { id = restaurant.RestaurantId })">Details</a>
+                    <a class="btn btn-warning" href="@Url.Action("Edit", new { id = restaurant.RestaurantId })">Edit</a>
+                    <a class="btn btn-danger" href="@Url.Action("Delete", new { id = restaurant.RestaurantId })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

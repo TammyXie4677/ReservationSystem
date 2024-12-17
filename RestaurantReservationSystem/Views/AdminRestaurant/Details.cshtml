@@ -1,0 +1,28 @@
+@model RestaurantReservationSystem.Models.Restaurant
+
+@{
+    ViewData["Title"] = "Restaurant Details";
+}
+
+<h1>@Model.Name</h1>
+
+<div>
+    <strong>Address:</strong> @Model.Address
+</div>
+<div>
+    <strong>Phone Number:</strong> @Model.PhoneNumber
+</div>
+<div>
+    <strong>Email:</strong> @Model.Email
+</div>
+<div>
+    <strong>Cuisine Type:</strong> @Model.CuisineType
+</div>
+<div>
+    <strong>Price Range:</strong> @Model.PriceRange
+</div>
+<div>
+    <strong>Logo:</strong>
+    <img src="@Model.LogoUrl" alt="Logo" style="width: 200px; height: auto;">
+</div>
+<a href="@Url.Action("Index")" class="btn btn-primary">Back to List</a>

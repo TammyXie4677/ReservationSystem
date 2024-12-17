@@ -38,13 +38,43 @@
     <tbody>
         @foreach (var booking in Model)
         {
-            <tr>
-                <td>@booking.User.FirstName @booking.User.LastName</td>
-                <td>@booking.Restaurant.Name</td>
-                <td>@booking.BookingDate.ToString("yyyy-MM-dd  HH:mm")</td>
-                <td>@booking.GuestsCount</td>
+            <tr id="row-@booking.BookingId">
+                <td id="customer-@booking.BookingId">@booking.User.FirstName @booking.User.LastName</td>
                 <td>
-                    <a href="/AdminBooking/Edit/@booking.BookingId" class="btn btn-secondary">Edit</a>
+                    <span class="view-mode" id="restaurant-@booking.BookingId">@booking.Restaurant.Name</span>
+                    <input 
+                        type="text" 
+                        class="edit-mode form-control" 
+                        value="@booking.Restaurant.Name" 
+                        style="display: none;"
+                    />
+                </td>
+                    <td>
+                        <span class="view-mode" id="date-@booking.BookingId">@booking.BookingDate.ToString("yyyy-MM-dd  HH:mm")</span>
+                        <input 
+                            id="bookingDate-@booking.BookingId"
+                            type="datetime-local" 
+                            class="edit-mode form-control" 
+                            value="@booking.BookingDate.ToString("yyyy-MM-ddTHH:mm")" 
+                            step="3600" 
+                            style="display: none;" 
+                        />
+                    </td>
+                <td>
+                    <span class="view-mode">@booking.GuestsCount</span>
+                    <input 
+                        type="number" 
+                        class="edit-mode form-control" 
+                        value="@booking.GuestsCount" 
+                        min="1" 
+                        style="display: none;" 
+                    />
+                </td>
+                <td>
+                    <button id="edit-btn-@booking.BookingId" class="btn btn-secondary edit-btn" data-id="@booking.BookingId">Edit</button>
+                    <button id="save-btn-@booking.BookingId" class="btn btn-primary save-btn" data-id="@booking.BookingId" style="display:none;">Save</button>
+                    <button id="cancel-btn-@booking.BookingId" class="btn btn-secondary btn-sm cancel-btn edit-mode" data-id="@booking.BookingId" style="display: none;">Cancel</button>
+
                     <form method="post" action="/AdminBooking/Delete/@booking.BookingId" style="display:inline;">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
@@ -97,6 +127,96 @@
             event.preventDefault(); // Prevent form submission
         }
     });
+
+$(document).ready(function () {
+    // Edit button event
+    $(".edit-btn").on("click", function () {
+      const rowId = $(this).data("id");
+
+      // Switch view mode to edit mode
+      $(`#row-${rowId} .view-mode`).hide();
+      $(`#row-${rowId} .edit-mode`).show();
+
+      // Hide Edit button, Show Save and Cancel buttons
+      const editButton = $(this);  // Current Edit button
+      const saveButton = $(`#save-btn-${rowId}`);
+      const cancelButton = $(`#cancel-btn-${rowId}`);
+
+      editButton.hide();
+      saveButton.show();
+      cancelButton.show();
+    });
+
+    // Cancel button event
+    $(".cancel-btn").on("click", function () {
+      const rowId = $(this).data("id");
+
+      // Hide edit mode, Show view mode
+      $(`#row-${rowId} .edit-mode`).hide();
+      $(`#row-${rowId} .view-mode`).show();
+
+      // Hide Save and Cancel buttons, Show Edit button
+      const saveButton = $(`#save-btn-${rowId}`);
+      const cancelButton = $(`#cancel-btn-${rowId}`);
+      const editButton = $(`#edit-btn-${rowId}`);
+
+      saveButton.hide();
+      cancelButton.hide();
+      editButton.show();
+    });
+
+    // Save button event
+    $(".save-btn").on("click", function () {
+      const rowId = $(this).data("id");
+      const restaurantName = $(`#restaurantName-${rowId}`).val();
+      const bookingDate = $(`#bookingDate-${rowId}`).val();
+      const guestsCount = $(`#guestsCount-${rowId}`).val();
+
+    if (!bookingDate || isNaN(new Date(bookingDate).getTime())) {
+        alert("Please select a valid booking date.");
+        return;
+    }
+      // Validate booking date
+      console.log("Sending AJAX request to save booking...");
+      console.log("Booking Date:", bookingDate);
+      console.log("Is valid date:", bookingDate && !isNaN(new Date(bookingDate).getTime()));
+    
+
+      $.ajax({
+        url: "/AdminBooking/SaveBooking",
+        method: "POST",
+        data: {
+          bookingId: rowId,
+          restaurant: restaurantName,
+          bookingDate: bookingDate,
+          guestsCount: guestsCount,
+        },
+        success: function (response) {
+          if (response.success) {
+            alert("Booking updated successfully.");
+
+            // Update the view
+            $(`#restaurantName-${rowId}`).val(restaurantName);
+            $(`#bookingDate-${rowId}`).text(bookingDate.replace("T", " ")); 
+            $(`#guestsCount-${rowId}`).text(guestsCount);
+
+            // Restore button state to Edit
+            const saveButton = $(`#save-btn-${rowId}`);
+            saveButton.hide();
+            const cancelButton = $(`#cancel-btn-${rowId}`);
+            cancelButton.hide();
+            const editButton = $(`#edit-btn-${rowId}`);
+            editButton.show();
+          } else {
+            alert("Error: " + response.message);
+          }
+        },
+        error: function (xhr) {
+          alert("Error updating booking: " + xhr.responseText);
+        }
+      });
+    });
+  });
 </script>
 <style>
     h1 {
@@ -122,4 +242,5 @@
         border-radius: 5px; 
         padding: 0.3rem 1rem; 
     }
+}
 </style>
