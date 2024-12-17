@@ -68,7 +68,7 @@
                     </div>
 
                     <!-- Guests -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-floating">
                             <input asp-for="Guests" type="number" class="form-control" id="Guests"
                                 placeholder="Number of Guests" min="1" max="20" required />
@@ -78,7 +78,7 @@
                     </div>
 
                     <!-- Reservation Date -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-floating">
                             <input asp-for="ReservationDate" id="ReservationDate" class="form-control flatpickr"
                                 placeholder="Reservation Date" required />
@@ -88,13 +88,25 @@
                     </div>
 
                     <!-- Reservation Time -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-floating">
                             <select asp-for="ReservationTime" id="ReservationTime" class="form-control" required>
                                 <option value="" disabled selected>Select a Time</option>
                             </select>
                             <label for="ReservationTime">Reservation Time</label>
                             <span asp-validation-for="ReservationTime" class="text-danger small"></span>
+                        </div>
+                    </div>
+ 
+                    <!-- Reservation Status -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select asp-for="Status" id="ReservationStatus" class="form-control" required>
+                                <option value="1">Confirmed</option>
+                                <option value="0">Canceled</option>
+                            </select>
+                            <label for="ReservationStatus">Reservation Status</label>
+                            <span asp-validation-for="Status" class="text-danger small"></span>
                         </div>
                     </div>
                 </div>
@@ -104,7 +116,6 @@
                     <a asp-controller="Booking" asp-action="Return" class="btn btn-outline-secondary">Return</a>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
-                        <button type="button" class="btn btn-danger" id="CancelBtn">Cancel</button>
                         <button type="button" id="deleteBtn" class="btn btn-danger" style="display: none;"
                             onclick="confirmDelete(@Model.BookingId)">
                             Delete
@@ -157,7 +168,6 @@
     function checkReservationDate(reservationDate) {
         const deleteBtn = document.getElementById("deleteBtn");
         const saveChangesBtn = document.getElementById("saveChangesBtn");
-        const cancelBtn = document.getElementById("CancelBtn");
         const pastDateAlert = document.getElementById("pastDateAlert");
 
         if (!reservationDate) {
@@ -174,13 +184,11 @@
         if (selectedDate < currentDate) {
             deleteBtn.style.display = "inline-block";
             saveChangesBtn.style.display = "none";  // Hide Save button
-            cancelBtn.style.display = "none";       // Hide Cancel button
             pastDateAlert.style.display = "block";  // Show alert
             pastDateAlert.style.visibility = "visible";
         } else {
             deleteBtn.style.display = "none";
             saveChangesBtn.style.display = "inline-block";  // Show Save button
-            cancelBtn.style.display = "inline-block";      // Show Cancel button
             pastDateAlert.style.display = "none";          // Hide alert
             pastDateAlert.style.visibility = "hidden";
         }

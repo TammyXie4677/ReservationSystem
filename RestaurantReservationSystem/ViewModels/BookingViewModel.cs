@@ -34,7 +34,8 @@ namespace RestaurantReservationSystem.ViewModels
         [Required(ErrorMessage = "Number of guests is required.")]
         [Range(1, 20, ErrorMessage = "Number of guests must be between 1 and 20.")]
         public int Guests { get; set; }
-        
+
+        [Range(0, 1, ErrorMessage = "Invalid reservation status.")]
         public int Status { get; set; }
     }
 }

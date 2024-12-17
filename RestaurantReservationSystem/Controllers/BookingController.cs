@@ -188,6 +188,7 @@ namespace RestaurantReservationSystem.Controllers
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
                 Guests = booking.GuestsCount,
+                Status = booking.Status,
                 ReservationDate = booking.BookingDate.ToString("yyyy-MM-dd"),
                 ReservationTime = booking.BookingDate.ToString("HH:mm")
             };
@@ -215,6 +216,11 @@ namespace RestaurantReservationSystem.Controllers
                 ModelState.AddModelError("Guests", "Number of guests must be between 1 and 20.");
             }
 
+            if (model.Status != 1 && model.Status != 0)
+            {
+                ModelState.AddModelError("Status", "Invalid reservation status.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -229,6 +235,7 @@ namespace RestaurantReservationSystem.Controllers
 
             booking.GuestsCount = model.Guests;
             booking.BookingDate = bookingDate;
+            booking.Status = model.Status;
             _context.SaveChanges();
 
             return RedirectToAction("ReservationDetails");
