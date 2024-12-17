@@ -127,7 +127,7 @@
                 <div id="pastDateAlert" class="alert alert-warning d-flex align-items-center mt-3"
                     style="display: none; border: 1px solid #ffc107; background-color: #fff8e1; color: #856404; border-radius: 8px; padding: 12px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem; color: #ffc107;"></i>
-                    <div>This reservation is in the past. You can only delete it.</div>
+                    <div>This reservation is in the past or is canceled. You can only delete it.</div>
                 </div>
             </form>
         </div>
@@ -164,8 +164,8 @@
     }
     updateTimeSlots(new Date());
 
-    // New function to check reservation date and update button states
-    function checkReservationDate(reservationDate) {
+    // New function to check reservation date and status, and update button states
+    function checkReservationDateAndStatus(reservationDate, status) {
         const deleteBtn = document.getElementById("deleteBtn");
         const saveChangesBtn = document.getElementById("saveChangesBtn");
         const pastDateAlert = document.getElementById("pastDateAlert");
@@ -178,30 +178,33 @@
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
 
-        const selectedDate = new Date(reservationDate);
+        const selectedDate = new Date(reservationDate + "T00:00:00");
         selectedDate.setHours(0, 0, 0, 0);
 
-        if (selectedDate < currentDate) {
-            deleteBtn.style.display = "inline-block";
-            saveChangesBtn.style.display = "none";  // Hide Save button
-            pastDateAlert.style.display = "block";  // Show alert
+        // Combine the condition for date check and status check
+        if (selectedDate < currentDate || status === 0) {  // Assuming 1 is for Cancel status
+            deleteBtn.style.display = "inline-block";  // Show Delete button
+            saveChangesBtn.style.display = "none";     // Hide Save Changes button
+            pastDateAlert.style.display = "block";     // Show alert
             pastDateAlert.style.visibility = "visible";
         } else {
-            deleteBtn.style.display = "none";
-            saveChangesBtn.style.display = "inline-block";  // Show Save button
-            pastDateAlert.style.display = "none";          // Hide alert
+            deleteBtn.style.display = "none";           // Hide Delete button
+            saveChangesBtn.style.display = "inline-block";  // Show Save Changes button
+            pastDateAlert.style.display = "none";       // Hide alert
             pastDateAlert.style.visibility = "hidden";
         }
     }
 
     document.addEventListener("DOMContentLoaded", function () {
         const reservationInput = document.getElementById("ReservationDate").value;
+        const reservationStatus = parseInt(document.getElementById("ReservationStatus").value, 10); 
+
         if (reservationInput) {
             // Convert reservationInput (string) into a Date object
             const reservationDate = new Date(reservationInput);
 
-            // Pass the Date object to the checkReservationDate function
-            checkReservationDate(reservationDate);
+            // Pass the Date object and status to the checkReservationDateAndStatus function
+            checkReservationDateAndStatus(reservationDate, reservationStatus);
         }
     });
 </script>
