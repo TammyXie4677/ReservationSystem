@@ -17,6 +17,6 @@ public class UpdateProfileViewModel
 
     public string? LastName { get; set; }
 
-    [Phone(ErrorMessage = "Invalid phone number.")]
+    [RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "Phone number must be in the format xxx-xxx-xxxx.")]
     public string? PhoneNumber { get; set; }
 }

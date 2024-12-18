@@ -130,7 +130,6 @@ namespace RestaurantReservationSystem.Controllers
             return View();
         }
 
-        // POST: Handle registration
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterViewModel model)
@@ -143,7 +142,7 @@ namespace RestaurantReservationSystem.Controllers
             // Check if the email already exists
             if (_context.Users.Any(u => u.Email == model.Email))
             {
-                ModelState.AddModelError("", "Email is already registered.");
+                ModelState.AddModelError("Email", "Email is already registered.");
                 return View(model);
             }
 
@@ -168,6 +167,8 @@ namespace RestaurantReservationSystem.Controllers
 
             return RedirectToAction("Login", "User");
         }
+
+
 
         // GET: Login form
         public IActionResult Login()

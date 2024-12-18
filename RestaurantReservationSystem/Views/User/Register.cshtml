@@ -6,6 +6,13 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <form asp-action="Register" method="post" class="p-4 border rounded shadow-sm bg-light">
+                @if (ViewData["EmailExists"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewData["EmailExists"]
+                    </div>
+                }
+
                 <!-- Email -->
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label"></label>
@@ -44,8 +51,9 @@
                 <!-- Phone Number -->
                 <div class="mb-3">
                     <label asp-for="PhoneNumber" class="form-label"></label>
-                    <input asp-for="PhoneNumber" class="form-control" />
+                    <input asp-for="PhoneNumber" class="form-control" id="PhoneNumber" />
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <span id="phone-error" class="text-danger"></span>
                 </div>
 
                 <!-- Submit Button -->
@@ -65,4 +73,24 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Function to validate phone number with format xxx-xxx-xxxx
+        function validatePhoneNumber() {
+            const phoneInput = document.getElementById("PhoneNumber");
+            const phoneError = document.getElementById("phone-error");
+            const phoneRegex = /^\d{3}-\d{3}-\d{4}$/; // Regex for the xxx-xxx-xxxx format
+
+            // Check if the phone number matches the required format
+            if (!phoneRegex.test(phoneInput.value)) {
+                phoneError.textContent = "Phone number must be in the format xxx-xxx-xxxx.";
+                phoneInput.classList.add("is-invalid");
+            } else {
+                phoneError.textContent = "";
+                phoneInput.classList.remove("is-invalid");
+            }
+        }
+
+        // Attach the event listener for input changes
+        document.getElementById("PhoneNumber").addEventListener("input", validatePhoneNumber);
+    </script>
 }

@@ -30,7 +30,7 @@ public partial class Program
 
         // Get Azure storage connection string and container name from appsettings
         var azureStorageConfig = builder.Configuration.GetSection("AzureBlobStorage");
-        var connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+        var connectionString = builder.Configuration.GetValue<string>("AzureBlobStorage:ConnectionString");
         if (string.IsNullOrEmpty(connectionString))
         {
             throw new ArgumentNullException(nameof(connectionString), "Azure Storage connection string is not configured.");
