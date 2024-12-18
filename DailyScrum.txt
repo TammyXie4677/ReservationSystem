@@ -136,9 +136,10 @@ Example entries for one day, both team members:
 
 2024/12/15 Qiutian Wang
 1. Done / not done since last scrum:
-- 
+- azure blobs upload
+- account deletion
 2. To do until next Scrum:
-- 
+- test components
 3. Need assistance / figure things out
 - 
 
@@ -196,9 +197,9 @@ Example entries for one day, both team members:
 
 2024/12/17 Qiutian Wang
 1. Done / not done since last scrum:
-- 
+- test components
 2. To do until next Scrum:
-- 
+- help teammates
 3. Need assistance / figure things out
 - 
 
