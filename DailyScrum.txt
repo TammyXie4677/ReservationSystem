@@ -205,8 +205,10 @@ Example entries for one day, both team members:
 
 2024/12/17 Kejia Li
 1. Done / not done since last scrum:
-- 
+- admin can delete restaurant
+-  
 2. To do until next Scrum:
-- 
+- edit reservation
+- edit restaurant
 3. Need assistance / figure things out
-- 
+- show blob url in db
