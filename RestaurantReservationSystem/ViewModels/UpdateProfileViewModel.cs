@@ -17,7 +17,7 @@ public class UpdateProfileViewModel
 
     public string? LastName { get; set; }
 
-    [Required(ErrorMessage = "Phone number is required.")]
     [RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "Phone number must be in the format xxx-xxx-xxxx.")]
-    public string PhoneNumber { get; set; } = null!;
+    public string PhoneNumber { get; set; } = string.Empty; // Default to empty string to allow empty input
 }
+

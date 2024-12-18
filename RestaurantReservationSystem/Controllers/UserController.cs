@@ -64,10 +64,16 @@ namespace RestaurantReservationSystem.Controllers
             }
 
             // Validate phone number format
-            if (!Regex.IsMatch(model.PhoneNumber, @"^\d{3}-\d{3}-\d{4}$"))
+            if (!string.IsNullOrEmpty(model.PhoneNumber) && !Regex.IsMatch(model.PhoneNumber, @"^\d{3}-\d{3}-\d{4}$"))
             {
                 ModelState.AddModelError("PhoneNumber", "Phone number must be in the format xxx-xxx-xxxx.");
                 return View(model);
+            }
+
+            // If no phone number is entered, use the existing one
+            if (string.IsNullOrEmpty(model.PhoneNumber))
+            {
+                model.PhoneNumber = user.PhoneNumber;
             }
 
             // Explicitly check for email uniqueness
@@ -99,7 +105,7 @@ namespace RestaurantReservationSystem.Controllers
             user.FirstName = model.FirstName ?? user.FirstName;
             user.LastName = model.LastName ?? user.LastName;
             user.Email = model.Email ?? user.Email;
-            user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
+            user.PhoneNumber = model.PhoneNumber;
 
             // Recreate authentication cookie with updated name
             var claims = new List<Claim>
@@ -128,6 +134,7 @@ namespace RestaurantReservationSystem.Controllers
 
             return RedirectToAction("Profile");
         }
+
 
 
 
