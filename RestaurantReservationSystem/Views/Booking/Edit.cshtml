@@ -200,9 +200,11 @@
 
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
+        console.log("Current Date:", currentDate);
 
-        const selectedDate = new Date(reservationDate + "T00:00:00");
+        const selectedDate = reservationDate;
         selectedDate.setHours(0, 0, 0, 0);
+        console.log("Selected Date:", selectedDate);
 
         // Combine the condition for date check and status check
         if (selectedDate < currentDate || status === 0) {  // Assuming 1 is for Cancel status
@@ -225,7 +227,7 @@
 
         if (reservationInput) {
             // Convert reservationInput (string) into a Date object
-            const reservationDate = new Date(reservationInput);
+            const reservationDate = new Date(reservationInput + "T00:00:00");
 
             // Pass the Date object and status to the checkReservationDateAndStatus function
             checkReservationDateAndStatus(reservationDate, reservationStatus);
