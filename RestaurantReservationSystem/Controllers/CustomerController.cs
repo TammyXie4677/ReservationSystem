@@ -49,14 +49,22 @@ namespace RestaurantReservationSystem.Controllers
                 ViewData["SearchTerm"] = "";
             }
 
-            // Map the results to RestaurantViewModel
+            // Get Blob Base URL from environment variables
+            string blobBaseUrl = Environment.GetEnvironmentVariable("BlobBaseUrl");
+            if (string.IsNullOrEmpty(blobBaseUrl))
+            {
+                throw new InvalidOperationException("BlobBaseUrl environment variable is not set.");
+            }
+
+            // Map the results to RestaurantViewModel with full Blob URL for Logo
             var restaurants = query
                 .Select(r => new RestaurantViewModel
                 {
                     RestaurantId = r.RestaurantId,
                     Name = r.Name,
                     CuisineType = r.CuisineType,
-                    PriceRange = r.PriceRange
+                    PriceRange = r.PriceRange,
+                    LogoUrl = string.IsNullOrEmpty(r.LogoUrl) ? null : $"{blobBaseUrl}/{r.LogoUrl}"
                 })
                 .ToList();
 

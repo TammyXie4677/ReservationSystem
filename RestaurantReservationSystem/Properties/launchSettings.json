@@ -2,12 +2,18 @@
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "http": {
+      "IIS Express": {
+      "environmentVariables": {
+        "BlobBaseUrl": "https://team04blobstorage.blob.core.windows.net/team04container"
+      }
+    },
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5115;https://localhost:5110",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "BlobBaseUrl": "https://team04blobstorage.blob.core.windows.net/team04container"
       }
     },
     "https": {

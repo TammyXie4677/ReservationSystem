@@ -32,7 +32,14 @@
                     {
                         <div class="col-md-4 mb-4">
                             <div class="card restaurant-card shadow-lg rounded">
-                                <img src="https://via.placeholder.com/150" class="card-img-top rounded" alt="@restaurant.Name">
+                                @if (!string.IsNullOrEmpty(restaurant.LogoUrl))
+                                {
+                                    <img src="@restaurant.LogoUrl" alt="Logo" class="card-img-top rounded" />
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/150" alt="Default Logo" class="card-img-top rounded" />
+                                }
                                 <div class="card-body">
                                     <h5 class="card-title text-uppercase">@restaurant.Name</h5>
                                     <p class="card-text">
