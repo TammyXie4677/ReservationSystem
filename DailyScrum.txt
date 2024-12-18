@@ -212,3 +212,28 @@ Example entries for one day, both team members:
 - edit restaurant
 3. Need assistance / figure things out
 - show blob url in db
+
+2024/12/18 Yunting Xie
+1. Done / not done since last scrum:
+
+2. To do until next Scrum:
+
+3. Need assistance / figure things out
+- 
+
+2024/12/18 Qiutian Wang
+1. Done / not done since last scrum:
+- update phone number validation
+2. To do until next Scrum:
+- presentation
+3. Need assistance / figure things out
+- 
+
+2024/12/18 Kejia Li
+1. Done / not done since last scrum:
+
+-  
+2. To do until next Scrum:
+
+3. Need assistance / figure things out
+
