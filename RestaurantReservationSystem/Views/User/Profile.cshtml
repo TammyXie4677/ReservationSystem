@@ -30,6 +30,8 @@
         <label asp-for="PhoneNumber" class="form-label"></label>
         <input asp-for="PhoneNumber" class="form-control" />
         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        <span id="phone-error" class="text-danger"></span>
+
     </div>
 
     <!-- Password -->
@@ -57,3 +59,36 @@
     class="mt-3">
     <button type="submit" class="btn btn-danger">Delete Account</button>
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Function to validate phone number with format xxx-xxx-xxxx
+        function validatePhoneNumber() {
+            const phoneInput = document.getElementById("PhoneNumber");
+            const phoneError = document.getElementById("phone-error");
+            const phoneRegex = /^\d{3}-\d{3}-\d{4}$/; // Regex for the xxx-xxx-xxxx format
+
+            // Check if the phone number matches the required format
+            if (!phoneRegex.test(phoneInput.value)) {
+                phoneError.textContent = "Phone number must be in the format xxx-xxx-xxxx.";
+                phoneInput.classList.add("is-invalid");
+                return false; // Prevent form submission if invalid
+            } else {
+                phoneError.textContent = "";
+                phoneInput.classList.remove("is-invalid");
+                return true; // Allow form submission if valid
+            }
+        }
+
+        // Attach the event listener for input changes
+        document.getElementById("PhoneNumber").addEventListener("input", validatePhoneNumber);
+
+        // Prevent form submission if validation fails
+        document.querySelector("form").addEventListener("submit", function (event) {
+            if (!validatePhoneNumber()) {
+                event.preventDefault(); // Prevent form submission if phone number is invalid
+            }
+        });
+
+    </script>
+}

@@ -7,6 +7,7 @@ using RestaurantReservationSystem.ViewModels;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace RestaurantReservationSystem.Controllers
 {
@@ -48,7 +49,7 @@ namespace RestaurantReservationSystem.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Profile(UpdateProfileViewModel model)
         {
-            // Check initial model state
+            // Check if the model is valid
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -62,16 +63,21 @@ namespace RestaurantReservationSystem.Controllers
                 return NotFound();
             }
 
+            // Validate phone number format
+            if (!Regex.IsMatch(model.PhoneNumber, @"^\d{3}-\d{3}-\d{4}$"))
+            {
+                ModelState.AddModelError("PhoneNumber", "Phone number must be in the format xxx-xxx-xxxx.");
+                return View(model);
+            }
+
             // Explicitly check for email uniqueness
             if (model.Email != null && model.Email.ToLower() != user.Email.ToLower())
             {
-                // Check if the new email already exists in the database for ANY OTHER user
                 bool emailExists = _context.Users
                     .Any(u => u.Email.ToLower() == model.Email.ToLower() && u.UserId != user.UserId);
 
                 if (emailExists)
                 {
-                    // Add model error to prevent form submission
                     ModelState.AddModelError("Email", "This email is already registered by another user.");
                     return View(model);
                 }
@@ -122,6 +128,7 @@ namespace RestaurantReservationSystem.Controllers
 
             return RedirectToAction("Profile");
         }
+
 
 
         // GET: Registration form
