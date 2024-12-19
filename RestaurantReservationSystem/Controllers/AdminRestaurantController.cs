@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -156,41 +157,51 @@ namespace RestaurantReservationSystem.Controllers
             return View(restaurant);
         }
     
-        // GET: Restaurants/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: Restaurants/Delete/5
+        [HttpPost, ActionName("Delete")]
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var restaurant = await _context.Restaurants
-                .FirstOrDefaultAsync(m => m.RestaurantId == id);
+            // find the restaurant by id in db
+            var restaurant = _context.Restaurants.FirstOrDefault(r => r.RestaurantId == id);
             if (restaurant == null)
             {
                 return NotFound();
             }
 
-            return View(restaurant);
-        }
-
-        // POST: Restaurants/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var restaurant = await _context.Restaurants.FindAsync(id);
-            if (restaurant != null)
+            // delete the logo file from Blob storage
+            if (!string.IsNullOrEmpty(restaurant.LogoUrl))
             {
-                _context.Restaurants.Remove(restaurant);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
+                // get the connection string from environment variables
+                string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING") ?? string.Empty;
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    // when connection string is not found
+                    return StatusCode(500, "Blob storage connection string not found in environment variables.");
+                }
 
-        private bool RestaurantExists(int id)
-        {
-            return _context.Restaurants.Any(e => e.RestaurantId == id);
+                // delete the blob file
+                string containerName = "team04container"; 
+                string blobName = Path.GetFileName(restaurant.LogoUrl); // get the blob name from the URL
+                
+                // get a reference to the Blob Service Client
+                var blobServiceClient = new BlobServiceClient(connectionString); 
+                var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+                // get a reference to the Blob Client
+                var blobClient = blobContainerClient.GetBlobClient(blobName);
+                if (blobClient.Exists())
+                {
+                    blobClient.DeleteIfExists(); // delete the blob file
+                }
+            }
+
+            // delete the restaurant record in the database
+            _context.Restaurants.Remove(restaurant);
+            _context.SaveChanges();
+
+            // return success message
+            TempData["SuccessMessage"] = "Restaurant deleted successfully.";
+            return RedirectToAction("Index");
         }
     }
 }
